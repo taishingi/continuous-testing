@@ -1,0 +1,20 @@
+[package]
+name = "continuous-testing"
+version = "0.1.4"
+edition = "2021"
+description = "A continuous testing tool"
+license = "GPL-2.0-or-later"
+repository = "https://github.com/taishingi/zuu/tree/master/continuous-testing"
+
+
+[[bin]]
+name = "again"
+path = "src/main.rs"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = "1.0.171"
+serde_yaml = "0.9.22"
+rsbadges = "1.1.5"
+colored_truecolor = "0.1.0"
+eywa = "0.1.7"
