@@ -1,0 +1,9 @@
+/target
+.idea
+.vscode
+logs.txt
+output.txt
+Cargo.lock
+Cargo.lock
+*.db
+Cargo.lock

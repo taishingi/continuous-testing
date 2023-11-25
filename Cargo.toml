@@ -13,8 +13,8 @@ path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = "1.0.171"
+serde = { version = "1.0.171", features = ["derive"] }
 serde_yaml = "0.9.22"
 rsbadges = "1.1.5"
 colored_truecolor = "0.1.0"
-eywa = "0.1.7"
+eywa = "0.2.0"
