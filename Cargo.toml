@@ -1,10 +1,10 @@
 [package]
 name = "continuous-testing"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = "A continuous testing tool"
 license = "GPL-2.0-or-later"
-repository = "https://github.com/taishingi/zuu/tree/master/continuous-testing"
+repository = "https://github.com/taishingi/continuous-testing"
 
 
 [[bin]]
