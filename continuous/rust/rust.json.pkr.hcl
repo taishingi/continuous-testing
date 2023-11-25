@@ -24,23 +24,14 @@ variable "image_nightly" {
 
 source "docker" "stable" {
   image  = var.image_stable
-  name = "rust-stable"
-  output_image = "rust-stable"
-  commit = true
 }
 
 source "docker" "beta" {
   image  = var.image_beta
-  name = "rust-beta"
-  output_image = "rust-beta"
-  commit = true
 }
 
 source "docker" "nightly" {
   image  = var.image_nightly
-  name = "rust-nightly"
-  output_image = "rust-nightly"
-  commit = true
 }
 
 
