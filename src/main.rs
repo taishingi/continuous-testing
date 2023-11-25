@@ -38,6 +38,7 @@ else
     packer hcl2_upgrade -with-annotations rust.json
     packer build rust.json.pkr.hcl
 fi
+
 "
                     );
                     assert!(Command::new("chmod")

@@ -1,6 +1,6 @@
 # Installation
 
-* [**Template of the project**](https://github.com/taishingi/continuous-testing)
+* [**Template of the project**](https://github.com/taishingi/continuous-template)
   * [**Docker**](https://docs.docker.com/engine/install/) and [**Packer**](https://developer.hashicorp.com/packer/docs) must be installed on your system
 
 ```bash
