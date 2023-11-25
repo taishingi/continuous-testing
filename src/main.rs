@@ -31,7 +31,9 @@ if [ -d continuous ];then
     packer validate .
     packer build .
 else
-    git clone https://github.com/taishingi/continuous-template continuous
+    wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.1.zip
+    unzip 0.0.1.zip -d continuous
+    rm 0.0.1.zip
     cd continuous/rust
     packer validate .
     packer build .
