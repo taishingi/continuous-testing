@@ -33,6 +33,7 @@ if [ -d continuous ];then
     packer build rust.json.pkr.hcl
 else
     git clone https://github.com/taishingi/continuous-template continuous
+    cd continuous/rust
     packer validate rust.json
     packer hcl2_upgrade -with-annotations rust.json
     packer build rust.json.pkr.hcl
