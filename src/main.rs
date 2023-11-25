@@ -54,7 +54,6 @@ fi
                 exit(1);
             }
         }
-        println!("{} {}", &args[0], &args[1]);
         exit(0);
     }
     println!("bad param");

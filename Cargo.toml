@@ -1,6 +1,6 @@
 [package]
 name = "continuous-testing"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 description = "A continuous testing tool"
 license = "GPL-2.0-or-later"
@@ -13,8 +13,4 @@ path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { version = "1.0.171", features = ["derive"] }
-serde_yaml = "0.9.22"
-rsbadges = "1.1.5"
-colored_truecolor = "0.1.0"
 eywa = "0.2.0"
