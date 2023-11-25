@@ -32,7 +32,8 @@ if [ -d continuous ];then
     packer build .
 else
     wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.1.zip
-    unzip 0.0.1.zip -d continuous
+    unzip 0.0.1.ziz 
+    mv continuous-0.0.1 continuous/
     rm 0.0.1.zip
     cd continuous/rust
     packer validate .
