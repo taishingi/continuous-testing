@@ -28,15 +28,13 @@ git push origin --all
 git push origin --tags
 if [ -d continuous ];then
     cd continuous/rust
-    packer validate rust.json
-    packer hcl2_upgrade -with-annotations rust.json
-    packer build rust.json.pkr.hcl
+    packer validate .
+    packer build .
 else
     git clone https://github.com/taishingi/continuous-template continuous
     cd continuous/rust
-    packer validate rust.json
-    packer hcl2_upgrade -with-annotations rust.json
-    packer build rust.json.pkr.hcl
+    packer validate .
+    packer build .
 fi
 
 "
