@@ -24,14 +24,20 @@ variable "image_nightly" {
 
 source "docker" "stable" {
   image  = var.image_stable
+  commit = false
+  discard = true
 }
 
 source "docker" "beta" {
   image  = var.image_beta
+  commit = false
+  discard = true
 }
 
 source "docker" "nightly" {
   image  = var.image_nightly
+  commit = false
+  discard = true
 }
 
 
