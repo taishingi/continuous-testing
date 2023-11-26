@@ -1,4 +1,5 @@
 use std::{
+    env::current_dir,
     path::Path,
     process::{exit, Command, ExitCode},
 };
@@ -30,6 +31,13 @@ if [ -d continuous ];then
     cd continuous/rust
     packer validate .
     packer build .
+    if [ $? -e 0 ];then
+        rsbadges --label continuous-testing --msg success --msg-color \"#00ff00\" --save-to-svg-at  ./continuous.svg --style flat
+        exit 0                    
+    else
+        rsbadges --label continuous-testing --msg success --msg-color \"#ff0000\" --save-to-svg-at  ./continuous.svg --style flat
+        exit 1                
+    fi
 else
     wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.1.zip
     unzip 0.0.1.zip
@@ -38,6 +46,13 @@ else
     cd continuous/rust
     packer validate .
     packer build .
+    if [ $? -e 0 ];then
+        rsbadges --label continuous-testing --msg success --msg-color \"#00ff00\" --save-to-svg-at  ./continuous.svg --style flat
+        exit 0                
+    else
+        rsbadges --label continuous-testing --msg success --msg-color \"#ff0000\" --save-to-svg-at  ./continuous.svg --style flat
+        exit 1                
+    fi
 fi
 
 "
@@ -50,6 +65,10 @@ fi
                         .wait()
                         .expect("msg")
                         .success());
+                    println!(
+                        "The {} is now tracked by continuous testing",
+                        current_dir().expect("faied to get current dir").display()
+                    );
                     exit(0);
                 }
             } else {
