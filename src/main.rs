@@ -31,7 +31,7 @@ if [ -d continuous ];then
     cd continuous/rust
     packer validate .
     packer build .
-    if [ $? -e 0 ];then
+    if [ \"$?\" -e 0 ];then
         rsbadges --label continuous-testing --msg success --msg-color \"#00ff00\" --save-to-svg-at  ./continuous.svg --style flat
         exit 0                    
     else
@@ -46,7 +46,7 @@ else
     cd continuous/rust
     packer validate .
     packer build .
-    if [ $? -e 0 ];then
+    if [ \"$?\" -e 0 ];then
         rsbadges --label continuous-testing --msg success --msg-color \"#00ff00\" --save-to-svg-at  ./continuous.svg --style flat
         exit 0                
     else
