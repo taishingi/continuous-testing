@@ -39,10 +39,10 @@ if [ -d continuous ];then
         exit 1                
     fi
 else
-    wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.1.zip
-    unzip 0.0.1.zip
-    mv -f continuous-template-0.0.1/ continuous/
-    rm 0.0.1.zip
+    wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.2.zip
+    unzip 0.0.2.zip
+    mv -f continuous-template-0.0.2/ continuous/
+    rm 0.0.2.zip
     cd continuous/rust
     packer validate .
     packer build .
