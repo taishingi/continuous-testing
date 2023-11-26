@@ -111,9 +111,9 @@ fi
 }
 
 fn help(args: Vec<String>) -> i32 {
-    println!("{} init         : Inittialize for rust by default", args[0]);
-    println!("{} init rust    : Inittialize for rust", args[0]);
-    println!("{} init go      : Inittialize for go", args[0]);
+    println!("{} init         : Init the repository for rust by default", args[0]);
+    println!("{} init rust    : Init the repository for rust", args[0]);
+    println!("{} init go      : Init the repository for go", args[0]);
     0
 }
 fn main() -> ExitCode {
