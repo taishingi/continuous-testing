@@ -26,11 +26,15 @@ if [ -d continuous ];then
         exit 1                
     fi
 else
-    wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.2.zip
-    unzip 0.0.2.zip
+    wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.3.zip
+    unzip 0.0.3.zip
     mv -f continuous-template-0.0.2/ continuous/
-    rm 0.0.2.zip
+    rm 0.0.3.zip
     cd continuous/rust
+    ./scripts-gen
+    vim stable
+    vim beta
+    vim nightly
     packer validate .
     packer build .
     if [ \"$?\" == 0 ];then
@@ -78,11 +82,15 @@ if [ -d continuous ];then
         exit 1                
     fi
 else
-    wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.2.zip
-    unzip 0.0.2.zip
-    mv -f continuous-template-0.0.2/ continuous/
-    rm 0.0.2.zip
+    wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.3.zip
+    unzip 0.0.3.zip
+    mv -f continuous-template-0.0.3/ continuous/
+    rm 0.0.3.zip
     cd continuous/go
+    ./scripts-gen
+    vim stable
+    vim beta
+    vim nightly
     packer validate .
     packer build .
     if [ \"$?\" == 0 ];then
