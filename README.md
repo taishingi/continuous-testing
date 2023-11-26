@@ -7,6 +7,12 @@
 cargo install continuous-testing
 ```
 
+## Arch user
+
+```bash
+yay -S continuous-testing
+```
+
 ```bash
 cargo install rsbadges
 ```
