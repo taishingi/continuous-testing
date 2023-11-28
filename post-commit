@@ -1,0 +1,48 @@
+#!/bin/bash
+
+unset GIT_DIR
+
+DWL_URL="https://codeload.github.com/taishingi/continuous-template/zip/refs/tags/0.0.4"
+RELEASE="0.0.4"
+SUM="cf82373f697d79bd4d8c7966084c9f223522800c0ab87b3c0fe71e8580103dc5  ${RELEASE}"
+DIR=$(realpath .)
+
+function download() {
+    wget --quiet "${DWL_URL}" || exit 1
+    DOWLOADED_SUM=$(sha256sum ${RELEASE})
+
+    if [ "${SUM}" == "${DOWLOADED_SUM}" ]; then
+        echo "Signature OK"
+        if [ -d "./continuous" ]; then
+            rm -rf ./continuous
+        fi
+        unzip ${RELEASE} || exit 1
+        mv "continuous-template-0.0.4" continuous || exit 1
+
+        for x in "rust" "go"; do
+            cd "${DIR}/continuous/${x}" && ./scripts-gen || exit 1
+        done
+    else
+        echo "Bad sum"
+        exit 1
+    fi
+}
+
+function main() {
+    if [ -d "continuous" ]; then
+        if [ -f "Cargo.toml" ]; then
+            cd continuous/rust || exit 1
+            packer validate . || exit 1
+            packer build . || exit 1
+        else
+            cd continuous/go || exit 1
+            packer validate . || exit 1
+            packer build . || exit 1
+        fi
+    else
+        download || exit 1
+        rm "${DIR}/${RELEASE}"
+    fi
+}
+
+main

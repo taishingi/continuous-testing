@@ -7,34 +7,7 @@ use std::{
 use eywa::touch_with_content;
 
 fn configure_rust() -> Result<String, String> {
-    touch_with_content!(
-        ".git/hooks/post-commit",
-        "#!/bin/bash
-
-unset GIT_DIR
-git push origin --all
-git push origin --tags
-if [ -d continuous ];then
-    cd continuous/rust
-    packer validate .
-    packer build .
-    if [ \"$?\" == 0 ];then
-        rsbadges --label continuous-testing --msg success --msg-color \"#00ff00\" --save-to-svg-at  ./continuous.svg --style flat
-        exit 0                    
-    else
-        rsbadges --label continuous-testing --msg failure --msg-color \"#ff0000\" --save-to-svg-at  ./continuous.svg --style flat
-        exit 1                
-    fi
-else
-    wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.3.zip
-    unzip 0.0.3.zip
-    mv -f continuous-template-0.0.3/ continuous/
-    rm 0.0.3.zip
-    cd continuous/rust
-    ./scripts-gen
-fi
-
-");
+    touch_with_content!(".git/hooks/post-commit", "");
     assert!(Command::new("chmod")
         .arg("+x")
         .arg(".git/hooks/post-commit")
@@ -51,34 +24,6 @@ fi
 }
 
 fn configure_go() -> Result<String, String> {
-    touch_with_content!(
-        ".git/hooks/post-commit",
-        "#!/bin/bash
-
-unset GIT_DIR
-git push origin --all
-git push origin --tags
-if [ -d continuous ];then
-    cd continuous/go
-    packer validate .
-    packer build .
-    if [ \"$?\" == 0 ];then
-        rsbadges --label continuous-testing --msg success --msg-color \"#00ff00\" --save-to-svg-at  ./continuous.svg --style flat
-        exit 0                    
-    else
-        rsbadges --label continuous-testing --msg failure --msg-color \"#ff0000\" --save-to-svg-at  ./continuous.svg --style flat
-        exit 1                
-    fi
-else
-    wget https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.3.zip
-    unzip 0.0.3.zip
-    mv -f continuous-template-0.0.3/ continuous/
-    rm 0.0.3.zip
-    cd continuous/go
-    ./scripts-gen
-fi
-
-");
     assert!(Command::new("chmod")
         .arg("+x")
         .arg(".git/hooks/post-commit")
