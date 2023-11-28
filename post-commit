@@ -22,11 +22,6 @@ function download() {
         for x in "rust" "go"; do
             cd "${DIR}/continuous/${x}" && ./scripts-gen || exit 1
         done
-        if [ -f "${DIR}/Cargo.toml" ]; then
-            echo "Edit scripts in ${DIR}/continuous/rust before commit !"
-        else
-            echo "Edit scripts in ${DIR}/continuous/go before commit !"
-        fi
     else
         echo "Bad sum"
         exit 1
