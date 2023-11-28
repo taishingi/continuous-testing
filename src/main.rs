@@ -1,51 +1,13 @@
 use std::{
-    env::current_dir,
     path::Path,
     process::{exit, Command, ExitCode},
 };
-
-use eywa::touch_with_content;
-
-fn configure_rust() -> Result<String, String> {
-    touch_with_content!(".git/hooks/post-commit", "");
-    assert!(Command::new("chmod")
-        .arg("+x")
-        .arg(".git/hooks/post-commit")
-        .spawn()
-        .expect("failed to run chmod")
-        .wait()
-        .expect("msg")
-        .success());
-    println!(
-        "The {} rust project is now tracked by continuous testing",
-        current_dir().expect("faied to get current dir").display()
-    );
-    Ok(String::from("success"))
-}
-
-fn configure_go() -> Result<String, String> {
-    assert!(Command::new("chmod")
-        .arg("+x")
-        .arg(".git/hooks/post-commit")
-        .spawn()
-        .expect("failed to run chmod")
-        .wait()
-        .expect("msg")
-        .success());
-    println!(
-        "The {} go project is now tracked by continuous testing",
-        current_dir().expect("failed to get current dir").display()
-    );
-    Ok(String::from("success"))
-}
 
 fn help(args: Vec<String>) -> i32 {
     println!(
         "{} init         : Init the repository for rust by default",
         args[0]
     );
-    println!("{} init rust    : Init the repository for rust", args[0]);
-    println!("{} init go      : Init the repository for go", args[0]);
     0
 }
 fn main() -> ExitCode {
@@ -61,7 +23,33 @@ fn main() -> ExitCode {
                     println!("Already initialized");
                     exit(1);
                 } else {
-                    configure_rust().expect("failed to configure rust");
+                    assert!(Command::new("wget").arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/post-commit")
+                    .current_dir("/tmp").spawn().expect("git not init").wait().expect("").success());
+                    assert!(Command::new("chmod")
+                        .arg("+x")
+                        .arg("post-commit")
+                        .current_dir("/tmp")
+                        .spawn()
+                        .expect("failed to run chmod")
+                        .wait()
+                        .expect("")
+                        .success());
+                    assert!(Command::new("mv")
+                        .arg("/tmp/post-commit")
+                        .arg(".git/hooks")
+                        .spawn()
+                        .expect("")
+                        .wait()
+                        .expect("")
+                        .success());
+                    assert!(Command::new("bash")
+                        .arg(".git/hooks/post-commit")
+                        .current_dir(".")
+                        .spawn()
+                        .expect("failed")
+                        .wait()
+                        .expect("")
+                        .success());
                     exit(0);
                 }
             } else {
@@ -70,15 +58,6 @@ fn main() -> ExitCode {
             }
         }
         exit(help(args));
-    }
-    if args.len() == 3 {
-        if args[1].eq("init") && args[2].eq("rust") {
-            configure_rust().expect("failed to configire");
-            exit(0);
-        } else if args[1].eq("init") && args[2].eq("go") {
-            configure_go().expect("failed to configure");
-            exit(0);
-        }
     }
     exit(help(args));
 }

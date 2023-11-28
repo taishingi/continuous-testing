@@ -42,6 +42,11 @@ function main() {
     else
         download || exit 1
         rm "${DIR}/${RELEASE}"
+        if [ -f "Cargo.toml" ]; then
+            echo "Edit scripts in ${DIR}/continuous/rust before commit !"
+        else
+            echo "Edit scripts in ${DIR}/continuous/go before commit !"
+        fi
     fi
 }
 
