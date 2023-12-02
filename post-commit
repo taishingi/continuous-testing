@@ -6,12 +6,14 @@ DWL_URL="https://codeload.github.com/taishingi/continuous-template/zip/refs/tags
 RELEASE="0.0.4"
 SUM="cf82373f697d79bd4d8c7966084c9f223522800c0ab87b3c0fe71e8580103dc5  ${RELEASE}"
 DIR=$(realpath .)
+GIT_BRANCHES=('master')
+GIT_REMOTES=('origin')
 
 function download() {
     wget --quiet "${DWL_URL}" || exit 1
-    DOWLOADED_SUM=$(sha256sum ${RELEASE})
+    DOWN_SUM=$(sha256sum ${RELEASE})
 
-    if [ "${SUM}" == "${DOWLOADED_SUM}" ]; then
+    if [ "${SUM}" == "${DOWN_SUM}" ]; then
         echo "Signature OK"
         if [ -d "./continuous" ]; then
             rm -rf ./continuous
@@ -47,5 +49,11 @@ function main() {
         exit 0
     fi
 }
+
+for r in "${GIT_REMOTES[@]}";do
+  for b in "${GIT_BRANCHES[@]}";do
+    git push "${r}" "${b}"
+  done
+done
 
 main
