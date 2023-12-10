@@ -24,7 +24,7 @@ fn main() -> ExitCode {
                     exit(1);
                 } else {
                     assert!(Command::new("wget").arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/post-commit")
-                    .current_dir("/tmp").spawn().expect("git not init").wait().expect("").success());
+                    .current_dir("/tmp").spawn().expect("wget not found").wait().expect("").success());
                     assert!(Command::new("chmod")
                         .arg("+x")
                         .arg("post-commit")

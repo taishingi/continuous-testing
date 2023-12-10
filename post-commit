@@ -2,12 +2,12 @@
 
 unset GIT_DIR
 
-DWL_URL="https://codeload.github.com/taishingi/continuous-template/zip/refs/tags/0.0.4"
-RELEASE="0.0.4"
+DWL_URL="https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.4.tar.gz"
+RELEASE="0.0.4.tar.gz"
 SUM="cf82373f697d79bd4d8c7966084c9f223522800c0ab87b3c0fe71e8580103dc5  ${RELEASE}"
 DIR=$(realpath .)
-GIT_BRANCHES=('master')
-GIT_REMOTES=('origin')
+BRANCH=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+REMOTE=$(git config branch.${BRANCH}.remote)
 
 function download() {
     wget --quiet "${DWL_URL}" || exit 1
@@ -50,10 +50,12 @@ function main() {
     fi
 }
 
-for r in "${GIT_REMOTES[@]}";do
-  for b in "${GIT_BRANCHES[@]}";do
-    git push "${r}" "${b}"
-  done
-done
+function send()
+{
+	git push "${REMOTE}" "${BRANCH}"
+	git push "${REMOTE}" --tags
+}
+
+send
 
 main
