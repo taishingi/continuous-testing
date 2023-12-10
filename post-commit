@@ -2,17 +2,23 @@
 
 unset GIT_DIR
 
-DWL_URL="https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.4.tar.gz"
-RELEASE="0.0.4.tar.gz"
+DWL_URL="https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.4.zip"
+RELEASE="0.0.4.zip"
 SUM="cf82373f697d79bd4d8c7966084c9f223522800c0ab87b3c0fe71e8580103dc5  ${RELEASE}"
 DIR=$(realpath .)
-BRANCH=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
-REMOTE=$(git config branch.${BRANCH}.remote)
+BRANCHES=('master')
+REMOTES=('origin')
 
 function download() {
-    wget --quiet "${DWL_URL}" || exit 1
-    DOWN_SUM=$(sha256sum ${RELEASE})
 
+	if [ -f	"$DIR/${RELEASE}" ];then
+		rm "${DIR}/${RELEASE}"
+	fi
+
+    wget --quiet "${DWL_URL}" || exit 1
+
+    DOWN_SUM=$(sha256sum ${RELEASE})
+	echo $DOWN_SUM
     if [ "${SUM}" == "${DOWN_SUM}" ]; then
         echo "Signature OK"
         if [ -d "./continuous" ]; then
@@ -52,8 +58,15 @@ function main() {
 
 function send()
 {
-	git push "${REMOTE}" "${BRANCH}"
-	git push "${REMOTE}" --tags
+	if [ -d "${DIR}/continuous" ];then
+
+		for r in "${REMOTES[@]}";do
+			for b in "${BRANCHES[@]}";do
+				git push "${r}" "${b}"
+				git push "${r}" --tags
+			done
+		done
+	fi
 }
 
 send
