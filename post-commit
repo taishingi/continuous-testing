@@ -14,7 +14,7 @@ REPOSITORY=""
 
 function ask()
 {
-    
+    clear
     while [ -z "${PROVIDER}" ]
     do
         read -r -p "Enter tour provider [github.com|gitlab.com] : " PROVIDER
