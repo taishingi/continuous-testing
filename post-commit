@@ -45,8 +45,8 @@ function ask()
         read -r -p "Enter your ${PROVIDER} repository name : " REPOSITORY
     done
     
-    
-    case $(curl -Is https://${PROVIDER}/${USERNAME}/${REPOSITORY} | head -n 1) in
+    STATUS=$(curl -Is https://${PROVIDER}/${USERNAME}/${REPOSITORY} | head -n 1)
+    case "${STATUS}" in
         "HTTP/2 200")
             if [ -f "dub.json" ]
             then
