@@ -92,15 +92,15 @@ function ask()
     
     while [ -z "${PROVIDER}" ]
     do
-        echo -e -n "${Blue}Hi${Cyan} ${USER}${BLUE} ! Please enter your provider ${White}[${Cyan}github.com|gitlab.com|bitbucket.org${White}] : "
+        echo -e -n "${Blue}Hi ${USER} ! Please enter your provider ${White}[${Blue}github.com|gitlab.com|bitbucket.org${White}] : "
         read -r PROVIDER
     done
     
-    echo -e "${Yellow}Checking provider..${Reset}"
+    echo -e "${Yellow}Checking provider...${Reset}"
     
     case ${PROVIDER} in
         "github.com"|"gitlab.com"|"bitbucket.org")
-            echo -e "${White}[ ${Green}OK ${White} ] Using ${BWhite}${PROVIDER}${Reset}"
+            echo -e "${White}[ ${Green}OK${White} ] ${BWhite}${PROVIDER}${Reset}"
         ;;
         
         *)
@@ -109,12 +109,15 @@ function ask()
     esac
     while [ -z "${USERNAME}" ]
     do
-        read -r -e -p "${Blue}Enter your ${Cyan}${PROVIDER}${Blue} username : ${White}" USERNAME
+        echo -e -n "${Blue}Enter your ${PROVIDER}${BIWhite} username${White} : "
+        read -r USERNAME
+        
     done
     
     while [ -z "${REPOSITORY}" ]
     do
-        read -r -e -p "${Blue}Enter your ${PROVIDER} ${Cyan} repository name ${White} : " REPOSITORY
+        echo -e -n "${Blue}Enter your ${PROVIDER}${BIWhite} repository${White} : "
+        read -r REPOSITORY
     done
     
     URL="https://${PROVIDER}/${USERNAME}/${REPOSITORY}"
