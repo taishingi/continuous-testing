@@ -8,7 +8,52 @@ SUM="b54e5a4a153fe9aac4bc2482c53260c5d7f23b6e551156a67588563be737c513  ${RELEASE
 DIR=$(realpath .)
 BRANCHES=('master')
 REMOTES=('origin')
+PROVIDER=
+USERNAME=
+REPOSITORY=
 
+function ask()
+{
+    
+    while [ -z ${PROVIDER} ]
+    then
+        echo "Enter tour provider [github.com|gitlab.com]"
+        read -p $PROVIDER
+    fi
+    
+    while [ -z ${USERNAME} ]
+    do
+        echo "Enter your ${provider} username"
+        read -p $USERNAME
+    done
+    
+    while [ -z ${REPOSITORY} ]
+    do
+        echo "Enter your ${provider} repository name"
+        read -p $REPOSITORY
+    done
+    
+    if [ "HTTP/2 200" != $(curl -Is "https://${PROVIDER}/${USERNAME}/${REPOSITORY}" | head -n 1) ]
+    then
+        PROVIDER=""
+        USERNAME=""
+        REPOSITORY=""
+        ask
+    else
+        if [ -f "dub.json" ]
+        then
+            cd continuous/d || exit 1
+            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+        elif [ -f "Cargo.toml" ]
+        then
+            cd continuous/rust || exit 1
+            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+        else
+            cd continuous/go || exit 1
+            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+        fi
+    fi
+}
 function download() {
     
     if [ -f "$DIR/${RELEASE}" ]
@@ -29,19 +74,7 @@ function download() {
         fi
         unzip ${RELEASE} || exit 1
         mv "continuous-template-0.0.5" continuous || exit 1
-        if [ -f "dub.json" ]
-        then
-            echo "Run the scripts-gen <provider> <username> <repository_name> now"
-            cd continuous/d || exit 1
-        elif [ -f "Cargo.toml" ]
-        then
-            echo "Run the scripts-gen <provider> <username> <repository_name> now"
-            cd continuous/rust || exit 1
-        else
-            echo "Run the scripts-gen <provider> <username> <repository_name> now"
-            cd continuous/go || exit 1
-        fi
-        
+        ask
         exit 0
     else
         echo "Bad sum"
