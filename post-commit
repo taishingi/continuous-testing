@@ -24,16 +24,6 @@ function ask()
         read -r -p "Enter tour provider [github.com|gitlab.com|bitbucket.org] : " PROVIDER
     done
     
-    while [ -z "${USERNAME}" ]
-    do
-        read -r -p "Enter your ${PROVIDER} username : " USERNAME
-    done
-    
-    while [ -z "${REPOSITORY}" ]
-    do
-        read -r -p "Enter your ${PROVIDER} repository name : " REPOSITORY
-    done
-    
     echo "Checking provider ..."
     
     case ${PROVIDER} in
@@ -45,7 +35,18 @@ function ask()
             ask
         ;;
     esac
-    case $(curl -Is "https://${PROVIDER}/${USERNAME}/${REPOSITORY}" | head -n 1) in
+    while [ -z "${USERNAME}" ]
+    do
+        read -r -p "Enter your ${PROVIDER} username : " USERNAME
+    done
+    
+    while [ -z "${REPOSITORY}" ]
+    do
+        read -r -p "Enter your ${PROVIDER} repository name : " REPOSITORY
+    done
+    
+    
+    case $(curl -Is https://${PROVIDER}/${USERNAME}/${REPOSITORY} | head -n 1) in
         "HTTP/2 200")
             if [ -f "dub.json" ]
             then
