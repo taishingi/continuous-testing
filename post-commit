@@ -82,6 +82,7 @@ On_IBlue='\033[0;104m'    # Blue
 On_IPurple='\033[0;105m'  # Purple
 On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
+
 function ask()
 {
     
@@ -152,12 +153,12 @@ function download() {
     echo $DOWN_SUM
     if [ "${SUM}" == "${DOWN_SUM}" ]
     then
-        echo "${White}[ ${Green}OK${White} ] Signature OK"
+        echo -e "${White}[ ${Green}OK${White} ] Signature OK"
         if [ -d "./continuous" ]
         then
             rm -rf ./continuous
         fi
-        unzip -qq ${RELEASE} || exit 1
+        unzip ${RELEASE} || exit 1
         rm ${RELEASE} || exit 1
         mv "continuous-template-0.0.5" continuous || exit 1
         ask
