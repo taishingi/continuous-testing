@@ -47,10 +47,10 @@ function ask()
     
     URL="https://${PROVIDER}/${USERNAME}/${REPOSITORY}"
     echo "Checking url ${URL}"
-    STATUS=$(curl -Is ${URL} | head -n 1)
+    STATUS=curl -G "$(perl -MURI::Escape -e 'print uri_escape shift, , q{^A-Za-z0-9\-._~/:}' -- "$URL")"
     echo "get status : ${STATUS}"
-    case "${STATUS}" in
-        "HTTP/2 200")
+    case ${STATUS} in
+        HTTP/2 200)
             if [ -f "dub.json" ]
             then
                 cd continuous/d || exit 1
