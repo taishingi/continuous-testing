@@ -157,7 +157,7 @@ function download() {
         then
             rm -rf ./continuous
         fi
-        unzip -qq "${RELEASE}" || exit 1
+        unzip -qq ${RELEASE} || exit 1
         rm ${RELEASE} || exit 1
         mv "continuous-template-0.0.5" continuous || exit 1
         ask
