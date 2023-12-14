@@ -148,7 +148,7 @@ function download() {
         rm "${DIR}/${RELEASE}"
     fi
     
-    wget -q "${DWL_URL}" 2>&1 /dev/null || exit 1
+    wget "${DWL_URL}" || exit 1
     
     DOWN_SUM=$(sha256sum ${RELEASE})
     
