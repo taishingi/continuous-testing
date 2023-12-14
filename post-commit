@@ -151,6 +151,7 @@ function download() {
     wget --quiet "${DWL_URL}" || exit 1
     
     DOWN_SUM=$(sha256sum ${RELEASE})
+    
     if [ "${SUM}" == "${DOWN_SUM}" ]
     then
         echo -e "${White}[ ${Green}OK${White} ] Signature OK"
