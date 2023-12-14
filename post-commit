@@ -15,19 +15,19 @@ REPOSITORY=
 function ask()
 {
     
-    while [ -z ${PROVIDER} ]
+    while [ -z "${PROVIDER}" ]
     do
         echo "Enter tour provider [github.com|gitlab.com]"
         read -p $PROVIDER
     fi
     
-    while [ -z ${USERNAME} ]
+    while [ -z "${USERNAME}" ]
     do
         echo "Enter your ${provider} username"
         read -p $USERNAME
     done
     
-    while [ -z ${REPOSITORY} ]
+    while [ -z "${REPOSITORY}" ]
     do
         echo "Enter your ${provider} repository name"
         read -p $REPOSITORY
