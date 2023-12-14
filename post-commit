@@ -31,12 +31,12 @@ function download() {
         mv "continuous-template-0.0.5" continuous || exit 1
         if [ -f "dub.json" ]
         then
-            echo "Run the ./scripts-gen <provider> <username> <repository_name> inside the d directory"
+            echo "Run the ./scripts-gen <provider> <username> <repository_name> inside the ./continuous/d/ irectory"
         elif [ -f "Cargo.toml" ]
         then
-            echo "Run the ./scripts-gen <provider> <username> <repository_name> inside the rust directory"
+            echo "Run the ./scripts-gen <provider> <username> <repository_name> inside the ./continuous/rust directory"
         else
-            echo "Run the ./scripts-gen <provider> <username> <repository_name> inside the go directory"
+            echo "Run the ./scripts-gen <provider> <username> <repository_name> inside the ./continuous/go directory"
         fi
         exit 0
     else
