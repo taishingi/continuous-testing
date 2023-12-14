@@ -62,7 +62,6 @@ function ask()
             else
                 cd continuous/go || exit 1
                 ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-                
             fi
             exit 0
         ;;
