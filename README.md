@@ -1,8 +1,7 @@
 # Installation
 
 * [**Template of the project**](https://github.com/taishingi/continuous-template)
-  * [**Docker**](https://docs.docker.com/engine/install/), [**Packer**](https://developer.hashicorp.com/packer/docs), [**Rustup**](https://rustup.rs), and [**Git**](https://git-scm.com) **unzip**, [**wget**](https://www.gnu.org/software/wget/) and [**Vim**](https://www.vim.org)  must be installed on your system
-
+  * [**Docker**](https://docs.docker.com/engine/install/), [**Packer**](https://developer.hashicorp.com/packer/docs), must be installed on your system.
 
 [**Docker root less**](https://linuxhandbook.com/rootless-docker/)
 

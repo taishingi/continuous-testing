@@ -11,7 +11,7 @@ REMOTES=('origin')
 
 function download() {
     
-    if [ -f	"$DIR/${RELEASE}" ]
+    if [ -f "$DIR/${RELEASE}" ]
     then
         rm "${DIR}/${RELEASE}"
     fi
