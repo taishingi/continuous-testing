@@ -8,9 +8,9 @@ SUM="b54e5a4a153fe9aac4bc2482c53260c5d7f23b6e551156a67588563be737c513  ${RELEASE
 DIR=$(realpath .)
 BRANCHES=('master')
 REMOTES=('origin')
-PROVIDER=
-USERNAME=
-REPOSITORY=
+PROVIDER=""
+USERNAME=""
+REPOSITORY=""
 
 function ask()
 {
@@ -33,13 +33,8 @@ function ask()
         read -p $REPOSITORY
     done
     
-    if [ "HTTP/2 200" != $(curl -Is "https://${PROVIDER}/${USERNAME}/${REPOSITORY}" | head -n 1) ]
+    if [ "HTTP/2 200" == $(curl -Is "https://${PROVIDER}/${USERNAME}/${REPOSITORY}" | head -n 1) ]
     then
-        PROVIDER=""
-        USERNAME=""
-        REPOSITORY=""
-        ask
-    else
         if [ -f "dub.json" ]
         then
             cd continuous/d || exit 1
@@ -52,6 +47,12 @@ function ask()
             cd continuous/go || exit 1
             ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
         fi
+    else
+        PROVIDER=""
+        USERNAME=""
+        REPOSITORY=""
+        ask
+        
     fi
 }
 function download() {
