@@ -46,30 +46,28 @@ function ask()
     done
     
     URL="https://${PROVIDER}/${USERNAME}/${REPOSITORY}"
-    echo "Checking url ${URL}"
-    STATUS=$(curl -G "$(perl -MURI::Escape -e 'print uri_escape shift, , q{^A-Za-z0-9\-._~/:}' -- "${URL}")")
-    echo "get status : ${STATUS}"
-    case "${STATUS}" in
-        "HTTP/2 200")
-            if [ -f "dub.json" ]
-            then
-                cd continuous/d || exit 1
-                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-            elif [ -f "Cargo.toml" ]
-            then
-                cd continuous/rust || exit 1
-                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-            else
-                cd continuous/go || exit 1
-                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-            fi
-            exit 0
-        ;;
-        *)
-            ask
-        ;;
-    esac
+    
+    if wget --spider "${URL}" 2>/dev/null
+    then
+        if [ -f "dub.json" ]
+        then
+            cd continuous/d || exit 1
+            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+        elif [ -f "Cargo.toml" ]
+        then
+            cd continuous/rust || exit 1
+            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+        else
+            cd continuous/go || exit 1
+            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+        fi
+        exit 0
+    else
+        echo "Repository are not founded please check if exists at ${URL}"
+        ask
+    fi
 }
+
 function download() {
     
     if [ -f "$DIR/${RELEASE}" ]
