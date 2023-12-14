@@ -109,14 +109,14 @@ function ask()
     esac
     while [ -z "${USERNAME}" ]
     do
-        echo -e -n "${Blue}Enter your ${PROVIDER}${BIWhite} username${White} : "
+        echo -e -n "${Blue}Enter your ${BIWhite}username${White} : "
         read -r USERNAME
         
     done
     
     while [ -z "${REPOSITORY}" ]
     do
-        echo -e -n "${Blue}Enter your ${PROVIDER}${BIWhite} repository${White} : "
+        echo -e -n "${Blue}Enter the name of your${BIWhite} repository${White} : "
         read -r REPOSITORY
     done
     
