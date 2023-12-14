@@ -49,23 +49,22 @@ function ask()
     echo "Checking url ${URL}"
     STATUS=$(curl -Is ${URL} | head -n 1)
     echo "get status : ${STATUS}"
-    case ${STATUS} in
+    case "${STATUS}" in
         "HTTP/2 200")
             if [ -f "dub.json" ]
             then
                 cd continuous/d || exit 1
                 ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-                exit 0
             elif [ -f "Cargo.toml" ]
             then
                 cd continuous/rust || exit 1
                 ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-                exit 0
             else
                 cd continuous/go || exit 1
                 ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-                exit 0
+                
             fi
+            exit 0
         ;;
         *)
             ask
@@ -91,6 +90,7 @@ function download() {
             rm -rf ./continuous
         fi
         unzip ${RELEASE} || exit 1
+        rm ${RELEASE} || exit 1
         mv "continuous-template-0.0.5" continuous || exit 1
         ask
         exit 0
