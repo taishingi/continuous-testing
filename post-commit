@@ -17,17 +17,17 @@ function ask()
     
     while [ -z "${PROVIDER}" ]
     do
-        read -r -p "Enter tour provider [github.com|gitlab.com] : " $PROVIDER
+        read -r -p "Enter tour provider [github.com|gitlab.com] : " PROVIDER
     done
     
     while [ -z "${USERNAME}" ]
     do
-        read -r -p "Enter your ${PROVIDER} username" $USERNAME
+        read -r -p "Enter your ${PROVIDER} username" USERNAME
     done
     
     while [ -z "${REPOSITORY}" ]
     do
-        read -r -p "Enter your ${PROVIDER} repository name" $REPOSITORY
+        read -r -p "Enter your ${PROVIDER} repository name" REPOSITORY
     done
     
     if [ "HTTP/2 200" == $(curl -Is "https://${PROVIDER}/${USERNAME}/${REPOSITORY}" | head -n 1) ]
