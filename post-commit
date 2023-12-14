@@ -148,7 +148,7 @@ function download() {
         rm "${DIR}/${RELEASE}"
     fi
     
-    wget -q --show-progress "${DWL_URL}" || exit 1
+    wget -q "${DWL_URL}" 2>&1 /dev/null || exit 1
     
     DOWN_SUM=$(sha256sum ${RELEASE})
     
@@ -159,7 +159,7 @@ function download() {
         then
             rm -rf ./continuous
         fi
-        unzip "${RELEASE}" || exit 1
+        unzip "${RELEASE}" 2>&1 > /dev/null || exit 1
         rm ${RELEASE} || exit 1
         mv "continuous-template-0.0.5" continuous || exit 1
         ask
