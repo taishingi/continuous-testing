@@ -92,7 +92,7 @@ function ask()
     
     while [ -z "${PROVIDER}" ]
     do
-        echo -e -n "${Blue}Hi ${USER} ! Please enter your provider ${White}[${Blue}github.com|gitlab.com|bitbucket.org${White}] : "
+        echo -e -n "${Blue}Hi ${USER} ! Please enter your ${White}provider [${Cyan}github.com${White}|${Cyan}gitlab.com${White}|${Cyan}bitbucket.org${White}] : "
         read -r PROVIDER
     done
     
