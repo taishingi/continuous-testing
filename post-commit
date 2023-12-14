@@ -14,9 +14,14 @@ REPOSITORY=""
 
 function ask()
 {
+    
+    PROVIDER=""
+    USERNAME=""
+    REPOSITORY=""
+    
     while [ -z "${PROVIDER}" ]
     do
-        read -r -p "Enter tour provider [github.com|gitlab.com] : " PROVIDER
+        read -r -p "Enter tour provider [github.com|gitlab.com|bitbucket.org] : " PROVIDER
     done
     
     while [ -z "${USERNAME}" ]
@@ -29,27 +34,36 @@ function ask()
         read -r -p "Enter your ${PROVIDER} repository name : " REPOSITORY
     done
     
-    if [[ "HTTP/2 200" == $(curl -Is "https://${PROVIDER}/${USERNAME}/${REPOSITORY}" | head -n 1) ]]
-    then
-        if [ -f "dub.json" ]
-        then
-            cd continuous/d || exit 1
-            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-        elif [ -f "Cargo.toml" ]
-        then
-            cd continuous/rust || exit 1
-            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-        else
-            cd continuous/go || exit 1
-            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-        fi
-    else
-        PROVIDER=""
-        USERNAME=""
-        REPOSITORY=""
-        ask
+    echo "Checking provider ..."
+    
+    case ${PROVIDER} in
+        "github.com"|"gitlab.com"|"bitbucket.org")
+            echo "Ok Using ${PROVIDER}"
+        ;;
         
-    fi
+        *)
+            ask
+        ;;
+    esac
+    case $(curl -Is "https://${PROVIDER}/${USERNAME}/${REPOSITORY}" | head -n 1) in
+        "HTTP/2 200")
+            if [ -f "dub.json" ]
+            then
+                cd continuous/d || exit 1
+                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+            elif [ -f "Cargo.toml" ]
+            then
+                cd continuous/rust || exit 1
+                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+            else
+                cd continuous/go || exit 1
+                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+            fi
+        ;;
+        *)
+            ask
+        ;;
+    esac
 }
 function download() {
     
