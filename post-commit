@@ -28,7 +28,7 @@ function download() {
             rm -rf ./continuous
         fi
         unzip ${RELEASE} || exit 1
-        mv "continuous-template-0.0.4" continuous || exit 1
+        mv "continuous-template-0.0.5" continuous || exit 1
         if [ -f "dub.json" ]
         then
             echo "Run the ./scripts-gen <provider> <username> <repository_name> inside the d directory"
