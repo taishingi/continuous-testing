@@ -2,34 +2,43 @@
 
 unset GIT_DIR
 
-DWL_URL="https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.4.zip"
-RELEASE="0.0.4.zip"
-SUM="cf82373f697d79bd4d8c7966084c9f223522800c0ab87b3c0fe71e8580103dc5  ${RELEASE}"
+DWL_URL="https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.5.zip"
+RELEASE="0.0.5.zip"
+SUM="b54e5a4a153fe9aac4bc2482c53260c5d7f23b6e551156a67588563be737c513  ${RELEASE}"
 DIR=$(realpath .)
 BRANCHES=('master')
 REMOTES=('origin')
 
 function download() {
-
-	if [ -f	"$DIR/${RELEASE}" ];then
-		rm "${DIR}/${RELEASE}"
-	fi
-
+    
+    if [ -f	"$DIR/${RELEASE}" ]
+    then
+        rm "${DIR}/${RELEASE}"
+    fi
+    
     wget --quiet "${DWL_URL}" || exit 1
-
+    
     DOWN_SUM=$(sha256sum ${RELEASE})
-	echo $DOWN_SUM
-    if [ "${SUM}" == "${DOWN_SUM}" ]; then
+    echo $DOWN_SUM
+    if [ "${SUM}" == "${DOWN_SUM}" ]
+    then
         echo "Signature OK"
-        if [ -d "./continuous" ]; then
+        if [ -d "./continuous" ]
+        then
             rm -rf ./continuous
         fi
         unzip ${RELEASE} || exit 1
         mv "continuous-template-0.0.4" continuous || exit 1
-
-        for x in "rust" "go"; do
-            cd "${DIR}/continuous/${x}" && ./scripts-gen || exit 1
-        done
+        if [ -f "dub.json" ]
+        then
+            echo "Run the ./scripts-gen <provider> <username> <repository_name> inside the d directory"
+        elif [ -f "Cargo.toml" ]
+        then
+            echo "Run the ./scripts-gen <provider> <username> <repository_name> inside the rust directory"
+        else
+            echo "Run the ./scripts-gen <provider> <username> <repository_name> inside the go directory"
+        fi
+        exit 0
     else
         echo "Bad sum"
         exit 1
@@ -37,9 +46,17 @@ function download() {
 }
 
 function main() {
-    if [ -d "continuous" ]; then
-        if [ -f "Cargo.toml" ]; then
+    if [ -d "continuous" ]
+    then
+        if [ -f "Cargo.toml" ]
+        then
             cd continuous/rust || exit 1
+            packer validate . || exit 1
+            packer build . || exit 1
+            exit 0
+        elif [ -f "dub.json" ]
+        then
+            cd continuous/d || exit 1
             packer validate . || exit 1
             packer build . || exit 1
             exit 0
@@ -58,15 +75,15 @@ function main() {
 
 function send()
 {
-	if [ -d "${DIR}/continuous" ];then
-
-		for r in "${REMOTES[@]}";do
-			for b in "${BRANCHES[@]}";do
-				git push "${r}" "${b}"
-				git push "${r}" --tags
-			done
-		done
-	fi
+    if [ -d "${DIR}/continuous" ];then
+        
+        for r in "${REMOTES[@]}";do
+            for b in "${BRANCHES[@]}";do
+                git push "${r}" "${b}"
+                git push "${r}" --tags
+            done
+        done
+    fi
 }
 
 send
