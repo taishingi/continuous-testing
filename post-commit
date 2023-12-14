@@ -19,7 +19,7 @@ function ask()
     do
         echo "Enter tour provider [github.com|gitlab.com]"
         read -p $PROVIDER
-    fi
+    done
     
     while [ -z "${USERNAME}" ]
     do
