@@ -32,11 +32,11 @@ function download() {
         if [ -f "dub.json" ]
         then
             echo "Run the scripts-gen <provider> <username> <repository_name> now"
-            cd continuous/d
+            cd continuous/d || exit 1
         elif [ -f "Cargo.toml" ]
         then
             echo "Run the scripts-gen <provider> <username> <repository_name> now"
-            cd continuous/rust
+            cd continuous/rust || exit 1
         else
             echo "Run the scripts-gen <provider> <username> <repository_name> now"
             cd continuous/go || exit 1
