@@ -156,12 +156,9 @@ function set_project()
                         "n|N")
                             project="--lib"
                         ;;
-                        *)
-                            project=""
-                        ;;
                     esac
                 done
-                
+
                 cargo new "${project}" --name "${name}" || exit 1
                 ask
             ;;
