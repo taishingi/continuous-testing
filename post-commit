@@ -173,8 +173,8 @@ function set_project()
 }
 function ask()
 {
-    $files=$(ls -l .)
-    if [ "${files}" == "total 0" ]
+    $files=$(ls .)
+    if [ -z ${files} ]
     then
         set_project
     else
