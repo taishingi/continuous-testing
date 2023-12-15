@@ -151,7 +151,7 @@ function set_project()
                     read project
                     
                 done
-                case $project in
+                case "${project}" in
                     "Y|y")
                         project="--bin"
                     ;;
