@@ -2,8 +2,8 @@
 
 unset GIT_DIR
 
-DWL_URL="https://github.com/taishingi/continuous-template/archive/refs/tags/0.0.5.zip"
-RELEASE="0.0.5.zip"
+DWL_URL="https://github.com/taishingi/continuous-template"
+RELEASE="0.0.5"
 SUM="b54e5a4a153fe9aac4bc2482c53260c5d7f23b6e551156a67588563be737c513  ${RELEASE}"
 DIR=$(realpath .)
 BRANCHES=('master')
@@ -146,31 +146,18 @@ function ask()
 
 function download() {
     
-    if [ -f "$DIR/${RELEASE}" ]
+    if [ -d ".repo" ]
     then
-        rm "${DIR}/${RELEASE}"
+        rm -rf .repo
     fi
+
+    git clone --quiet ${DWL_URL} .repo && cd .repo  && git fetch --all --tags  && git checkout -b "${USER}" ${RELEASE} && git range-diff 0.0.4...0.0.5 && cd .. || exit 1
     
-    wget -qnv "${DWL_URL}" || exit 1
-    
-    DOWN_SUM=$(sha256sum ${RELEASE})
-    
-    if [ "${SUM}" == "${DOWN_SUM}" ]
+    if [ -d "./continuous" ]
     then
-        echo -e "${White}[ ${Green}OK${White} ] Signature OK"
-        if [ -d "./continuous" ]
-        then
-            rm -rf ./continuous
-        fi
-        unzip ${RELEASE} || exit 1
-        rm ${RELEASE} || exit 1
-        mv "continuous-template-0.0.5" continuous || exit 1
-        ask
-        exit 0
-    else
-        echo -e "${White}[ ${Red}KO ${White} ]  Bad sum"
-        exit 1
+        rm -rf ./continuous
     fi
+    mv .repo continuous
 }
 
 function main() {
@@ -196,7 +183,7 @@ function main() {
         fi
     else
         download || exit 1
-        rm "${DIR}/${RELEASE}" || exit 1
+        ask
         exit 0
     fi
 }
