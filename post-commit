@@ -151,15 +151,15 @@ function set_project()
                     read project
                     case "${project}" in
                         "y|Y")
-                            project="--bin"
+                            project="bin"
                         ;;
                         "n|N")
-                            project="--lib"
+                            project="lib"
                         ;;
                     esac
                 done
-
-                cargo new "${project}" --name "${name}" || exit 1
+                
+                cargo new "--${project}" --name "${name}" || exit 1
                 ask
             ;;
             d)
