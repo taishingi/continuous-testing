@@ -138,11 +138,6 @@ function set_project()
                 do
                     echo -e -n "${Blue}Please enter the${White} name of the project : "
                     read name
-                    if [ -d "$name" ]
-                    then
-                        echo -e "${Red} The directory already exist take an another name${Reset}"
-                        name=""
-                    fi
                 done
                 
                 while [ -z "${project}" ]
