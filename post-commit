@@ -229,6 +229,12 @@ function ask()
                 cd continuous/go || exit 1
                 ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
             fi
+        else
+            if [[ "${PROVIDER}" == "github.com" && -x "/usr/bin/gh" ]]
+            then
+                gh repo create
+                ask
+            fi
         fi
     fi
 }
