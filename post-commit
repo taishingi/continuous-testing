@@ -92,7 +92,7 @@ function ask()
     
     while [ -z "${PROVIDER}" ]
     do
-        echo -e -n "${Blue}Hi ${USER} ! Please enter your provider ${White}[${Blue}github.com${White}|${Blue}gitlab.com${White}|${Blue}bitbucket.org${White}] : "
+        echo -e -n "${Blue}Please enter your provider ${White}[${Blue}github.com${White}|${Blue}gitlab.com${White}|${Blue}bitbucket.org${White}] : "
         read -r PROVIDER
     done
     
@@ -151,7 +151,7 @@ function download() {
         rm "${DIR}/${RELEASE}"
     fi
     
-    wget "${DWL_URL}" || exit 1
+    wget -qnv "${DWL_URL}" || exit 1
     
     DOWN_SUM=$(sha256sum ${RELEASE})
     
