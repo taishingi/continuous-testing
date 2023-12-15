@@ -154,7 +154,7 @@ function set_project()
                     esac
                 done
                 
-                cargo new "--${project}" --name "${name}" || exit 1
+                cargo new --name ${name} "--${project}" || exit 1
                 ask
             ;;
             d)
