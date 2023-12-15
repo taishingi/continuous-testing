@@ -150,18 +150,18 @@ function set_project()
                     echo -e -n "${Blue}Project is a ${White}program project [${Blue}y${White}|${Blue}Y${White}|${Blue}n${White}|${Blue}N${White}] : "
                     read project
                     
-                    case $project in
-                        "Y|y")
-                            project="--bin"
-                        ;;
-                        "N|n")
-                            project="--lib"
-                        ;;
-                        *)
-                            project=""
-                        ;;
-                    esac
                 done
+                case $project in
+                    "Y|y")
+                        project="--bin"
+                    ;;
+                    "N|n")
+                        project="--lib"
+                    ;;
+                    *)
+                        set_project
+                    ;;
+                esac
                 cargo new "${project}" --name "${name}" || exit 1
                 ask
             ;;
