@@ -211,28 +211,26 @@ function ask()
         
         URL="https://${PROVIDER}/${USERNAME}/${REPOSITORY}"
         
-        if wget --spider "${URL}" 2>/dev/null
+        if [ -d "./continuous" ]
         then
-            if [ -f "dub.json" ]
+            if wget --spider "${URL}" 2>/dev/null
             then
-                cd continuous/d || exit 1
-                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-            elif [ -f "Cargo.toml" ]
-            then
-                cd continuous/rust || exit 1
-                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-            elif [ -f "go.mod" ]
-            then
-                cd continuous/go || exit 1
-                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-            else
-                set_project
-                ask
+                if [ -f "dub.json" ]
+                then
+                    cd continuous/d || exit 1
+                    ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+                elif [ -f "Cargo.toml" ]
+                then
+                    cd continuous/rust || exit 1
+                    ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+                elif [ -f "go.mod" ]
+                then
+                    cd continuous/go || exit 1
+                    ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+                fi
             fi
-            echo -e -n "${Reset}"
-            exit 0
         else
-            echo -e "${BRed}Repository are not founded please check if exists at ${White}${URL}${Reset}"
+            download
             ask
         fi
     fi
