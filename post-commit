@@ -150,10 +150,10 @@ function set_project()
                     echo -e -n "${Blue}Project is a ${White}program project [${Blue}y${White}|${Blue}Y${White}|${Blue}n${White}|${Blue}N${White}] : "
                     read project
                     case ${project} in
-                        "Y|y")
+                        Y|y)
                             project="--bin"
                         ;;
-                        "N|n")
+                        N|n)
                             project="--lib"
                         ;;
                         *)
