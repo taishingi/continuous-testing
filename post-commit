@@ -226,14 +226,7 @@ function ask()
             scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
         fi
     else
-        if [[ "${PROVIDER}" == "github.com" && -x "/usr/bin/gh" ]]
-        then
-            gh repo create && scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
-            scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
-            git add .
-            git commit -m "initial commit"
-            git pull
-        fi
+        echo -e "${White}[${Yellow} Warning${White} ] repository not found at the ${URL}"
     fi
 }
 
