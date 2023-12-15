@@ -150,20 +150,20 @@ function set_project()
             ;;
             rust)
                 crate=""
-                exec=""
+                executable=""
                 while [ -z "${crate}" ]
                 do
                     echo -e -n "${Blue}Please enter the${White} name of the project : "
                     read crate
                 done
                 
-                while [ -z "${exec}" ]
+                while [ -z "${executable}" ]
                 do
                     echo -e -n "${Blue}Project is a ${White}program project [${Blue}y${White}|${Blue}Y${White}|${Blue}n${White}|${Blue}N${White}] : "
                     
-                    read exec
+                    read executable
                     
-                    if [[ "${exec}" == "y" || "${exec}" == "Y" ]]
+                    if [[ "${executable}" == "y" || "${executable}" == "Y" ]]
                     then
                         cargo new --bin ${crate} || exit 1
                     else
