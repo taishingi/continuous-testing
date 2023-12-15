@@ -249,14 +249,17 @@ function download() {
 function main() {
     
     files=$(ls .)
+    toml=$(fd -e toml)
+    dub=$(fd '^dub.json$')
+    go=$(fd '^go.mod$')
+    
     if [ -z "${files}" ]
     then
         set_project
-    elif [[ ! -f "Cargo.toml" || ! -f "go.mod" || ! -f "dub.json" ]]
+    elif [[ -z "${toml}"  || -z "${dub}" || -z "${go}" ]]
     then
         set_project
     fi
-    
     
     if [ -d "./continuous" ]
     then
