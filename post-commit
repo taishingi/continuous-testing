@@ -229,8 +229,7 @@ function ask()
     else
         if [[ "${PROVIDER}" == "github.com" && -x "/usr/bin/gh" ]]
         then
-            gh repo create
-            scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
+            gh repo create && scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
         fi
     fi
 }
