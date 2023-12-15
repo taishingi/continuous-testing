@@ -5,7 +5,28 @@ use std::{
 
 fn help(args: Vec<String>) -> i32 {
     println!("{} init         : Init the repository", args[0]);
+    println!(
+        "{} new          : Init the repository with the gh cli command",
+        args[0]
+    );
     0
+}
+
+fn gh(args: Vec<String>) -> ExitCode {
+    if args.is_empty() {
+        exit(help(args));
+    }
+
+    assert!(Command::new("gh")
+        .arg("repo")
+        .arg("create")
+        .current_dir(".")
+        .spawn()
+        .expect("gh not found")
+        .wait()
+        .expect("")
+        .success());
+    exit(0);
 }
 
 fn again(args: Vec<String>) -> ExitCode {
@@ -53,6 +74,9 @@ fn again(args: Vec<String>) -> ExitCode {
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().collect();
 
+    if args.len() == 2 && args[1].eq("new") {
+        return gh(args);
+    }
     if args.len() == 2 {
         if args[1].eq("init") {
             if Path::new(".git").is_dir() {
