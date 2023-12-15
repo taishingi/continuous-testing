@@ -120,6 +120,7 @@ function set_project()
                 
                 go mod init "${module}" || exit 1
                 download
+                ask
             ;;
             "custom")
                 cmd=""
@@ -130,6 +131,7 @@ function set_project()
                 done
                 `$cmd` && echo -e  "${White}[ ${Green}OK${White} ] success${Reset}" || exit 1
                 download
+                ask
             ;;
             rust)
                 crate=""
@@ -150,12 +152,14 @@ function set_project()
                     then
                         cargo new --bin ${crate} || exit 1
                         download
+                        ask
                     fi
                     
                     if [[ "${exec}" == "n" || "${exec}" == "N" ]]
                     then
                         cargo new --lib ${crate} || exit 1
                         download
+                        ask
                     fi
                     exec=""
                 done
@@ -163,6 +167,7 @@ function set_project()
             d)
                 dub init . || exit 1
                 download
+                ask
             ;;
         esac
     done
@@ -242,7 +247,6 @@ function download() {
         rm -rf ./continuous
     fi
     mv .repo continuous
-    ask
 }
 
 function main() {
@@ -279,8 +283,6 @@ function main() {
         else
             exit 1
         fi
-    else
-        download
     fi
     exit 0
 }
