@@ -134,7 +134,7 @@ function set_project()
             rust)
                 crate=""
                 project=""
-                make=""
+                local make=""
                 while [ -z "${crate}" ]
                 do
                     echo -e -n "${Blue}Please enter the${White} name of the project : "
@@ -158,7 +158,7 @@ function set_project()
                     esac
                 done
                 
-                cargo new --${make} "${crate}" || exit 1
+                cargo new --${make} ${crate} || exit 1
                 ask
             ;;
             d)
