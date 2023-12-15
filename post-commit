@@ -132,9 +132,89 @@ function ask()
         then
             cd continuous/rust || exit 1
             ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-        else
+        elif [ -f "go.mod" ]
+        then
             cd continuous/go || exit 1
             ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+        else
+            l=""
+            while [ -z $l ]
+            do
+                echo -e -n "${Blue}Please enter your language ${White}[${Blue}d${White}|${Blue}rust${White}|${Blue}go${White}] : "
+                read l
+                case "$l" in
+                    go)
+                        module=""
+                        version=""
+                        while [ -z "${module}" ]
+                        do
+                            echo -e -n "${Blue}Please enter the${White} name of the module : "
+                            read module
+                        done
+                        while [ -z "${version}" ]
+                        do
+                            echo -e -n "${Blue}Please enter the${White} module version : "
+                            read version
+                            case "${version}" in
+                                "v0|v1")
+                                    module="${module}/m"
+                                    version="${version}"
+                                ;;
+                                "v2")
+                                    module="${module}/m/v2"
+                                    version="${version}"
+                                ;;
+                                *)
+                                    version=""
+                                ;;
+                            esac
+                        done
+                        
+                        go mod init "${module}" || exit 1
+                        cd continuous/go || exit 1
+                        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+                    ;;
+                    rust)
+                        name=""
+                        project=""
+                        while [ -z "${name}" ]
+                        do
+                            echo -e -n "${Blue}Please enter the${White} name of the project : "
+                            read name
+                            if [ -d "$name" ]
+                            then
+                                echo -e "${Red} The directory already exist take an another name${Reset}"
+                                name=""
+                            fi
+                        done
+                        
+                        while [ -z "${project}" ]
+                        do
+                            echo -e -n "${Blue}Project is a${White}program project [${Blue}y${White}|${Blue}Y${White}|${Blue}n${White}|${Blue}N${White}] : "
+                            read project
+                            case "$project" in
+                                "Y|y")
+                                    project="--bin"
+                                ;;
+                                "N|n")
+                                    project="--lib"
+                                ;;
+                                *)
+                                    project=""
+                                ;;
+                            esac
+                        done
+                        cargo new "${project}" --name "${name}" || exit 1
+                        cd continuous/rust || exit 1
+                        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+                    ;;
+                    d)
+                        dub init . || exit 1
+                        cd continuous/d || exit 1
+                        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+                    ;;
+                esac
+            done
         fi
         echo -e -n "${Reset}"
         exit 0
@@ -150,7 +230,7 @@ function download() {
     then
         rm -rf .repo
     fi
-
+    
     git clone --quiet ${DWL_URL} .repo && cd .repo  && git fetch --all --tags  && git checkout -b "${USER}" ${RELEASE} && git range-diff 0.0.4...0.0.5 && cd .. || exit 1
     
     if [ -d "./continuous" ]
