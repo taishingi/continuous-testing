@@ -133,32 +133,32 @@ function set_project()
             ;;
             rust)
                 crate=""
-                exectuable=""
-                make=""
+                exec=""
                 while [ -z "${crate}" ]
                 do
                     echo -e -n "${Blue}Please enter the${White} name of the project : "
                     read crate
                 done
                 
-                while [ -z "${exectuable}" ]
+                while [ -z "${exec}" ]
                 do
                     echo -e -n "${Blue}Project is a ${White}program project [${Blue}y${White}|${Blue}Y${White}|${Blue}n${White}|${Blue}N${White}] : "
-                    case $(read exectuable) in
-                        "y|Y")
-                            make="bin"
-                        ;;
-                        "n|N")
-                            make="lib"
-                        ;;
-                        *)
-                            exectuable=""
-                        ;;
-                    esac
+                    
+                    read exec
+                    
+                    if [[ "${exec}" == "y" || "${exec}" == "Y" ]]
+                    then
+                        cargo new --bin ${crate} || exit 1
+                        ask
+                    fi
+                    
+                    if [[ "${exec}" == "n" || "${exec}" == "N" ]]
+                    then
+                        cargo new --lib ${crate} || exit 1
+                        ask
+                    fi
+                    exec=""
                 done
-                
-                cargo new --${make} ${crate} || exit 1
-                ask
             ;;
             d)
                 dub init . || exit 1
@@ -167,6 +167,7 @@ function set_project()
         esac
     done
 }
+
 function ask()
 {
     files=$(ls .)
