@@ -269,23 +269,18 @@ function main() {
             cd continuous/rust || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            exit 0
         elif [ ! -z "${dub}" ]
         then
             send
             cd continuous/d || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            exit 0
         elif [ ! -z "${go}" ]
         then
             send
             cd continuous/go || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            exit 0
-        else
-            exit 1
         fi
     else
         download
