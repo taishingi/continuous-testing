@@ -83,6 +83,25 @@ On_IPurple='\033[0;105m'  # Purple
 On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
 
+function scripts()
+{
+    if [ -f "dub.json" ]
+    then
+        cd continuous/d || exit 1
+        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+    elif [ -f "Cargo.toml" ]
+    then
+        cd continuous/rust || exit 1
+        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+    elif [ -f "go.mod" ]
+    then
+        cd continuous/go || exit 1
+        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+    else
+        exit 1
+    fi
+}
+
 function set_project()
 {
     l=""
@@ -211,31 +230,19 @@ function ask()
     done
     
     URL="https://${PROVIDER}/${USERNAME}/${REPOSITORY}"
-    
-    if [ -d "./continuous" ]
+    if wget --spider "${URL}" 2>/dev/null
     then
-        if wget --spider "${URL}" 2>/dev/null
+        if [ -d "./continuous" ]
         then
-            if [ -f "dub.json" ]
-            then
-                cd continuous/d || exit 1
-                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-            elif [ -f "Cargo.toml" ]
-            then
-                cd continuous/rust || exit 1
-                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-            elif [ -f "go.mod" ]
-            then
-                cd continuous/go || exit 1
-                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-            fi
+            scripts
+        fi
+    else
+        if [[ "${PROVIDER}" == "github.com" && -x "/usr/bin/gh" ]]
+        then
+            gh repo create
+            scripts
         else
-            if [[ "${PROVIDER}" == "github.com" && -x "/usr/bin/gh" ]]
-            then
-                gh repo create
-            fi
-        else
-            exit 1
+            ask
         fi
     fi
 }
@@ -290,6 +297,9 @@ function main() {
         else
             exit 1
         fi
+    else
+        download
+        ask
     fi
     exit 0
 }
