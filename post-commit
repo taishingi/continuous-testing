@@ -173,8 +173,8 @@ function set_project()
 }
 function ask()
 {
-    $files=$(ls .)
-    if [ -z ${files} ]
+    files=$(ls .)
+    if [ -z "${files}" ]
     then
         set_project
     else
