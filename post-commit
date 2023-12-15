@@ -83,144 +83,161 @@ On_IPurple='\033[0;105m'  # Purple
 On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
 
+function set_project()
+{
+    l=""
+    while [ -z $l ]
+    do
+        echo -e -n "${Blue}Please enter your language ${White}[${Blue}d${White}|${Blue}rust${White}|${Blue}go${White}|${Blue}custom${White}] : "
+        read l
+        case "$l" in
+            go)
+                module=""
+                version=""
+                while [ -z "${module}" ]
+                do
+                    echo -e -n "${Blue}Please enter the${White} name of the module : "
+                    read module
+                done
+                while [ -z "${version}" ]
+                do
+                    echo -e -n "${Blue}Please enter the${White} module version : "
+                    read version
+                    case "${version}" in
+                        "v0|v1")
+                            module="${module}/m"
+                            version="${version}"
+                        ;;
+                        "v2")
+                            module="${module}/m/v2"
+                            version="${version}"
+                        ;;
+                        *)
+                            version=""
+                        ;;
+                    esac
+                done
+                
+                go mod init "${module}" || exit 1
+                ask
+            ;;
+            "custom")
+                cmd=""
+                while [ -z "${cmd}" ]
+                do
+                    echo -e -n "${Blue}Please enter the${White} command line to init the project : "
+                    read cmd
+                done
+                `$cmd` && echo -e  "${White}[ ${Green}OK${White} ] success${Reset}" || set_project
+                ask
+            ;;
+            rust)
+                name=""
+                project=""
+                while [ -z "${name}" ]
+                do
+                    echo -e -n "${Blue}Please enter the${White} name of the project : "
+                    read name
+                    if [ -d "$name" ]
+                    then
+                        echo -e "${Red} The directory already exist take an another name${Reset}"
+                        name=""
+                    fi
+                done
+                
+                while [ -z "${project}" ]
+                do
+                    echo -e -n "${Blue}Project is a${White}program project [${Blue}y${White}|${Blue}Y${White}|${Blue}n${White}|${Blue}N${White}] : "
+                    read project
+                    case "$project" in
+                        "Y|y")
+                            project="--bin"
+                        ;;
+                        "N|n")
+                            project="--lib"
+                        ;;
+                        *)
+                            project=""
+                        ;;
+                    esac
+                done
+                cargo new "${project}" --name "${name}" || exit 1
+                ask
+            ;;
+            d)
+                dub init . || exit 1
+                ask
+            ;;
+        esac
+    done
+}
 function ask()
 {
-    
-    PROVIDER=""
-    USERNAME=""
-    REPOSITORY=""
-    
-    while [ -z "${PROVIDER}" ]
-    do
-        echo -e -n "${Blue}Please enter your provider ${White}[${Blue}github.com${White}|${Blue}gitlab.com${White}|${Blue}bitbucket.org${White}] : "
-        read -r PROVIDER
-    done
-    
-    echo -e "${Yellow}Checking provider...${Reset}"
-    
-    case ${PROVIDER} in
-        "github.com"|"gitlab.com"|"bitbucket.org")
-            echo -e "${White}[ ${Green}OK${White} ] ${BWhite}${PROVIDER}${Reset}"
-        ;;
-        
-        *)
-            ask
-        ;;
-    esac
-    while [ -z "${USERNAME}" ]
-    do
-        echo -e -n "${Blue}Enter your ${BIWhite}username${White} : "
-        read -r USERNAME
-        
-    done
-    
-    while [ -z "${REPOSITORY}" ]
-    do
-        echo -e -n "${Blue}Enter the name of your${BIWhite} repository${White} : "
-        read -r REPOSITORY
-    done
-    
-    URL="https://${PROVIDER}/${USERNAME}/${REPOSITORY}"
-    
-    if wget --spider "${URL}" 2>/dev/null
+    $files=$(ls -l .)
+    if [ "${files}" == "total 0" ]
     then
-        if [ -f "dub.json" ]
-        then
-            cd continuous/d || exit 1
-            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-        elif [ -f "Cargo.toml" ]
-        then
-            cd continuous/rust || exit 1
-            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-        elif [ -f "go.mod" ]
-        then
-            cd continuous/go || exit 1
-            ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-        else
-            l=""
-            while [ -z $l ]
-            do
-                echo -e -n "${Blue}Please enter your language ${White}[${Blue}d${White}|${Blue}rust${White}|${Blue}go${White}] : "
-                read l
-                case "$l" in
-                    go)
-                        module=""
-                        version=""
-                        while [ -z "${module}" ]
-                        do
-                            echo -e -n "${Blue}Please enter the${White} name of the module : "
-                            read module
-                        done
-                        while [ -z "${version}" ]
-                        do
-                            echo -e -n "${Blue}Please enter the${White} module version : "
-                            read version
-                            case "${version}" in
-                                "v0|v1")
-                                    module="${module}/m"
-                                    version="${version}"
-                                ;;
-                                "v2")
-                                    module="${module}/m/v2"
-                                    version="${version}"
-                                ;;
-                                *)
-                                    version=""
-                                ;;
-                            esac
-                        done
-                        
-                        go mod init "${module}" || exit 1
-                        cd continuous/go || exit 1
-                        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-                    ;;
-                    rust)
-                        name=""
-                        project=""
-                        while [ -z "${name}" ]
-                        do
-                            echo -e -n "${Blue}Please enter the${White} name of the project : "
-                            read name
-                            if [ -d "$name" ]
-                            then
-                                echo -e "${Red} The directory already exist take an another name${Reset}"
-                                name=""
-                            fi
-                        done
-                        
-                        while [ -z "${project}" ]
-                        do
-                            echo -e -n "${Blue}Project is a${White}program project [${Blue}y${White}|${Blue}Y${White}|${Blue}n${White}|${Blue}N${White}] : "
-                            read project
-                            case "$project" in
-                                "Y|y")
-                                    project="--bin"
-                                ;;
-                                "N|n")
-                                    project="--lib"
-                                ;;
-                                *)
-                                    project=""
-                                ;;
-                            esac
-                        done
-                        cargo new "${project}" --name "${name}" || exit 1
-                        cd continuous/rust || exit 1
-                        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-                    ;;
-                    d)
-                        dub init . || exit 1
-                        cd continuous/d || exit 1
-                        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
-                    ;;
-                esac
-            done
-        fi
-        echo -e -n "${Reset}"
-        exit 0
+        set_project
     else
-        echo -e "${BRed}Repository are not founded please check if exists at ${White}${URL}${Reset}"
-        ask
+        PROVIDER=""
+        USERNAME=""
+        REPOSITORY=""
+        
+        while [ -z "${PROVIDER}" ]
+        do
+            echo -e -n "${Blue}Please enter your provider ${White}[${Blue}github.com${White}|${Blue}gitlab.com${White}|${Blue}bitbucket.org${White}] : "
+            read -r PROVIDER
+        done
+        
+        echo -e "${Yellow}Checking provider...${Reset}"
+        
+        case ${PROVIDER} in
+            "github.com"|"gitlab.com"|"bitbucket.org")
+                echo -e "${White}[ ${Green}OK${White} ] ${BWhite}${PROVIDER}${Reset}"
+            ;;
+            
+            *)
+                ask
+            ;;
+        esac
+        while [ -z "${USERNAME}" ]
+        do
+            echo -e -n "${Blue}Enter your ${BIWhite}username${White} : "
+            read -r USERNAME
+            
+        done
+        
+        while [ -z "${REPOSITORY}" ]
+        do
+            echo -e -n "${Blue}Enter the name of your${BIWhite} repository${White} : "
+            read -r REPOSITORY
+        done
+        
+        URL="https://${PROVIDER}/${USERNAME}/${REPOSITORY}"
+        
+        if wget --spider "${URL}" 2>/dev/null
+        then
+            if [ -f "dub.json" ]
+            then
+                cd continuous/d || exit 1
+                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+            elif [ -f "Cargo.toml" ]
+            then
+                cd continuous/rust || exit 1
+                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+            elif [ -f "go.mod" ]
+            then
+                cd continuous/go || exit 1
+                ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+            else
+                set_project
+                ask
+            fi
+            echo -e -n "${Reset}"
+            exit 0
+        else
+            echo -e "${BRed}Repository are not founded please check if exists at ${White}${URL}${Reset}"
+            ask
+        fi
     fi
 }
 
