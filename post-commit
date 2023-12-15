@@ -225,8 +225,6 @@ function ask()
                 ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
             fi
         fi
-    else
-        download
     fi
 }
 
