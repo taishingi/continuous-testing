@@ -166,13 +166,9 @@ function set_project()
                     if [[ "${exec}" == "y" || "${exec}" == "Y" ]]
                     then
                         cargo new --bin ${crate} || exit 1
-                    fi
-                    
-                    if [[ "${exec}" == "n" || "${exec}" == "N" ]]
-                    then
+                    else
                         cargo new --lib ${crate} || exit 1
                     fi
-                    exec=""
                 done
             ;;
             d)
