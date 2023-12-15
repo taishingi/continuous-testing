@@ -132,12 +132,12 @@ function set_project()
                 ask
             ;;
             rust)
-                name=""
+                crate=""
                 project=""
-                while [ -z "${name}" ]
+                while [ -z "${crate}" ]
                 do
                     echo -e -n "${Blue}Please enter the${White} name of the project : "
-                    read name
+                    read crate
                 done
                 
                 while [ -z "${project}" ]
@@ -151,10 +151,13 @@ function set_project()
                         "n|N")
                             project="lib"
                         ;;
+                        *)
+                            project=""
+                        ;;
                     esac
                 done
                 
-                cargo new --name ${name} "--${project}" || exit 1
+                cargo new --${project} "${crate}" || exit 1
                 ask
             ;;
             d)
