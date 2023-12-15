@@ -88,15 +88,15 @@ function scripts()
     if [ -f "dub.json" ]
     then
         cd continuous/d || exit 1
-        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+        ./scripts-gen "${1}" "${2}" "${3}" || exit 1
     elif [ -f "Cargo.toml" ]
     then
         cd continuous/rust || exit 1
-        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+        ./scripts-gen "${1}" "${2}" "${3}" || exit 1
     elif [ -f "go.mod" ]
     then
         cd continuous/go || exit 1
-        ./scripts-gen "${PROVIDER}" "${USERNAME}" "${REPOSITORY}" || exit 1
+        ./scripts-gen "${1}" "${2}" "${3}" || exit 1
     else
         exit 1
     fi
@@ -138,8 +138,6 @@ function set_project()
                 done
                 
                 go mod init "${module}" || exit 1
-                download
-                ask
             ;;
             "custom")
                 cmd=""
@@ -149,8 +147,6 @@ function set_project()
                     read cmd
                 done
                 `$cmd` && echo -e  "${White}[ ${Green}OK${White} ] success${Reset}" || exit 1
-                download
-                ask
             ;;
             rust)
                 crate=""
@@ -170,23 +166,17 @@ function set_project()
                     if [[ "${exec}" == "y" || "${exec}" == "Y" ]]
                     then
                         cargo new --bin ${crate} || exit 1
-                        download
-                        ask
                     fi
                     
                     if [[ "${exec}" == "n" || "${exec}" == "N" ]]
                     then
                         cargo new --lib ${crate} || exit 1
-                        download
-                        ask
                     fi
                     exec=""
                 done
             ;;
             d)
                 dub init . || exit 1
-                download
-                ask
             ;;
         esac
     done
@@ -234,15 +224,13 @@ function ask()
     then
         if [ -d "./continuous" ]
         then
-            scripts
+            scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
         fi
     else
         if [[ "${PROVIDER}" == "github.com" && -x "/usr/bin/gh" ]]
         then
             gh repo create
-            scripts
-        else
-            ask
+            scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
         fi
     fi
 }
@@ -271,7 +259,7 @@ function main() {
         set_project
     fi
     
-    if [ -d "continuous" ]
+    if [ -d "./continuous" ]
     then
         if [ -f "Cargo.toml" ]
         then
