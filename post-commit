@@ -250,10 +250,7 @@ function main() {
     dub=$(fd '^dub.json$')
     go=$(fd '^go.mod$')
     
-    if [ -z "${files}" ]
-    then
-        set_project
-    elif [[ -z "${toml}"  || -z "${dub}" || -z "${go}" ]]
+    if [ -z "${files}" && -z "${toml}"  || -z "${dub}" || -z "${go}" ]
     then
         set_project
     fi
