@@ -49,7 +49,7 @@ You can back to an old release if you want or create your branch.
 
 All providers scripts are based on [**archlinux**](https://archlinux.org) from my [**docker hub**](https://hub.docker.com/u/taishingi) to simplify testing.
 
-[**D**](https://hub.docker.com/r/taishingi/dlang/tags) [**Rust**](https://hub.docker.com/r/taishingi/rlang/tags) [**Go**](https://hub.docker.com/r/taishingi/glang/tags)
+[**D**](https://hub.docker.com/r/taishingi/dlang/tags) [**Rust**](https://hub.docker.com/r/taishingi/rlang/tags) [**Go**](https://hub.docker.com/r/taishingi/glang/tags) [**Bash**](https://hub.docker.com/r/taishingi/shlang/tags)
 
 > Manually swith to release
 
