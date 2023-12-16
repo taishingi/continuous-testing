@@ -87,7 +87,7 @@ On_IWhite='\033[0;107m'   # White
 
 function scripts()
 {
-    toml=$(fd -e toml)
+    toml=$(fd '^Cargo.toml$')
     dub=$(fd '^dub.json$')
     go=$(fd '^go.mod$')
     
