@@ -181,7 +181,7 @@ function main() {
     if [[ -z "${files}" ]]
     then
         echo -e "${White}[${Red} KO ] no files are founded"
-        exit 1
+        exit 0
     fi
     
     if [ -d "${DIR}" ]
