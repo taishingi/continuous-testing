@@ -41,8 +41,8 @@ fn again(args: Vec<String>) -> ExitCode {
         false => {
             fs::create_dir(".icon").expect("failed to create the .icon directory");
             assert!(Command::new("cp")
-                .arg("/tmp/continuous-testing/.icon/icon.png")
-                .arg(".icon/icon.png")
+                .arg("/tmp/continuous-testing/.icon/notif.png")
+                .arg(".icon/notif.png")
                 .current_dir(".")
                 .spawn()
                 .expect("cp not found")
