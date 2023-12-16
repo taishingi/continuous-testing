@@ -15,11 +15,47 @@ cargo install continuous-testing
 yay -S continuous-testing
 ```
 
-## Init a repository
+## Command to run before init
+
+### For d user
 
 ```bash
-cd project
+mkdir project && cd project 
 ```
+
+```bash
+dub init .
+```
+
+### For rust user
+
+```bash
+mkdir project && cd project 
+```
+
+```bash
+cargo init --bin --vcs git
+```
+
+```bash
+cargo init --lib --vcs git
+```
+
+### For go user
+
+```bash
+mkdir project && cd project 
+```
+
+```bash
+go mod init example.com/m # to initialize a v0 or v1 module
+```
+
+```bash
+go mod init example.com/m/v2 # to initialize a v2 module
+```
+
+## Initialise tracking
 
 ```bash
 again init
@@ -50,5 +86,5 @@ All providers scripts are based on [**archlinux**](https://archlinux.org) from m
 > Manually swith to release
 
 ```bash
-cd continuous && git checkout -b new-branch $version || exit 1
+cd continuous && git checkout -b new-branch-name $tag || exit 1
 ```
