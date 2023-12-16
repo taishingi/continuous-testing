@@ -93,15 +93,15 @@ function scripts()
     
     if [ ! -z "${dub}" ]
     then
-        cd "${DIR}/d" || exit 1
+        cd "./${DIR}/d" || exit 1
         ./scripts-gen "${1}" "${2}" "${3}" || exit 1
     elif [ ! -z "${toml}" ]
     then
-        cd "${DIR}/rust" || exit 1
+        cd "./${DIR}/rust" || exit 1
         ./scripts-gen "${1}" "${2}" "${3}" || exit 1
     elif [ ! -z "${go}" ]
     then
-        cd continuous/go || exit 1
+        cd "./{$DIR}"/go || exit 1
         ./scripts-gen "${1}" "${2}" "${3}" || exit 1
     else
         exit 1
