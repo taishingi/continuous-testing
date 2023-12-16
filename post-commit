@@ -85,23 +85,22 @@ On_IWhite='\033[0;107m'   # White
 
 function scripts()
 {
-    if [ -d "./continuous" ]
+    toml=$(fd -e toml)
+    dub=$(fd '^dub.json$')
+    go=$(fd '^go.mod$')
+    
+    if [ ! -z "${dub}" ]
     then
-        if [ -f "dub.json" ]
-        then
-            cd continuous/d || exit 1
-            ./scripts-gen "${1}" "${2}" "${3}" || exit 1
-        elif [ -f "Cargo.toml" ]
-        then
-            cd continuous/rust || exit 1
-            ./scripts-gen "${1}" "${2}" "${3}" || exit 1
-        elif [ -f "go.mod" ]
-        then
-            cd continuous/go || exit 1
-            ./scripts-gen "${1}" "${2}" "${3}" || exit 1
-        else
-            exit 1
-        fi
+        cd continuous/d || exit 1
+        ./scripts-gen "${1}" "${2}" "${3}" || exit 1
+    elif [ ! -z "${toml}" ]
+    then
+        cd continuous/rust || exit 1
+        ./scripts-gen "${1}" "${2}" "${3}" || exit 1
+    elif [ ! -z "${go}" ]
+    then
+        cd continuous/go || exit 1
+        ./scripts-gen "${1}" "${2}" "${3}" || exit 1
     fi
 }
 
@@ -221,11 +220,9 @@ function ask()
     URL="https://${PROVIDER}/${USERNAME}/${REPOSITORY}"
     if wget --spider "${URL}" 2>/dev/null
     then
-        if [ -d "./continuous" ]
-        then
-            scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
-        fi
+        scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
     else
+        scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
         echo -e "${White}[${Yellow} Warning${White} ] repository not found at the ${URL}"
     fi
 }
