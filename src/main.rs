@@ -1,5 +1,4 @@
 use std::{
-    fs,
     path::Path,
     process::{exit, Command, ExitCode},
 };
@@ -13,21 +12,27 @@ fn again(args: Vec<String>) -> ExitCode {
     if args.is_empty() {
         exit(help(args));
     }
-
-    if Path::new("/tmp/continuous-testing").exists() {
-        fs::remove_dir_all("/tmp/continuous-testing").expect("Failed to remove old package");
-    }
     
-    assert!(Command::new("git")
-        .arg("clone")
-        .arg("--quiet")
-        .arg("https://github.com/taishingi/continuous-testing.git")
-        .current_dir("/tmp")
-        .spawn()
-        .expect("git not found")
-        .wait()
-        .expect("")
-        .success());
+    match Path::new("/tmp/continuous-testing").exists() {
+        true => assert!(Command::new("git")
+            .arg("pull")
+            .current_dir("/tmp/continuous-testing")
+            .spawn()
+            .expect("failed to find git")
+            .wait()
+            .expect("")
+            .success()),
+        false => assert!(Command::new("git")
+            .arg("clone")
+            .arg("--quiet")
+            .arg("https://github.com/taishingi/continuous-testing.git")
+            .current_dir("/tmp")
+            .spawn()
+            .expect("git not found")
+            .wait()
+            .expect("")
+            .success()),
+    }
     assert!(Command::new("cp")
         .arg("/tmp/continuous-testing/post-commit")
         .arg(".git/hooks/post-commit")
