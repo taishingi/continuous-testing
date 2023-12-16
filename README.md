@@ -22,10 +22,6 @@ cd project
 ```
 
 ```bash
-git init
-```
-
-```bash
 again init
 ```
 
