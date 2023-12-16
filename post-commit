@@ -194,26 +194,26 @@ function main() {
             cd continuous/rust || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "${REAL_DIR}/.icon/icon.svg"  "All tests passes for your ${PROJECT} project"
+            notify-send -i "${REAL_DIR}/.icon/icon.png"  "All tests passes for your ${PROJECT} project"
         elif [ ! -z "${dub}" ]
         then
             send
             cd continuous/d || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "${REAL_DIR}/.icon/icon.svg" "All tests passes for your ${PROJECT} project"
+            notify-send -i "${REAL_DIR}/.icon/icon.png" "All tests passes for your ${PROJECT} project"
         elif [ ! -z "${go}" ]
         then
             send
             cd continuous/go || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "${REAL_DIR}/.icon/icon.svg"  "All tests passes for your ${PROJECT} project"
+            notify-send -i "${REAL_DIR}/.icon/icon.png"  "All tests passes for your ${PROJECT} project"
         fi
     else
         download
         ask
-        notify-send -i "${REAL_DIR}/.icon/icon.svg"  "${PROJECT} it's now tracked by continuous-testing"
+        notify-send -i "${REAL_DIR}/.icon/icon.png"  "${PROJECT} it's now tracked by continuous-testing"
     fi
     exit 0
 }
