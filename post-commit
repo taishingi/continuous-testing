@@ -180,7 +180,7 @@ function main() {
     
     if [[ -z "${files}" ]]
     then
-        echo -e "${White}[${Red} KO ${White}] no files are founded${Reset}"
+        echo -e "${White}[${Red} KO ${White}] No files are founded${Reset}"
         exit 0
     fi
     
