@@ -10,6 +10,8 @@ PROVIDER=""
 USERNAME=""
 REPOSITORY=""
 DIR="continuous"
+PROJECT=$(pwd | sed 's#.*/##')
+REAL_DIR=$(realpath .)
 
 Color_Off='\033[0m'       # Text Reset
 
@@ -192,26 +194,26 @@ function main() {
             cd continuous/rust || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "$(pwd).icon/icon.png"  "All tests passes for $(pwd | sed 's#.*/##') project"
+            notify-send -i "${REAL_DIR}/.icon/icon.png"  "All tests passes for your ${PROJECT} project"
         elif [ ! -z "${dub}" ]
         then
             send
             cd continuous/d || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "$(pwd).icon/icon.png"  "All tests passes for $(pwd | sed 's#.*/##') project"
+            notify-send -i "${REAL_DIR}/.icon/icon.png" "All tests passes for your ${PROJECT} project"
         elif [ ! -z "${go}" ]
         then
             send
             cd continuous/go || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "$(pwd).icon/icon.png"  "All tests passes for $(pwd | sed 's#.*/##') project"
+            notify-send -i "${REAL_DIR}/.icon/icon.png"  "All tests passes for your ${PROJECT} project"
         fi
     else
         download
         ask
-        notify-send -i "$(pwd).icon/icon.png"  "$(pwd | sed 's#.*/##') it's now tracked by continuous-testing"
+        notify-send -i "${REAL_DIR}/.icon/icon.png"  "${PROJECT} it's now tracked by continuous-testing"
     fi
     exit 0
 }
