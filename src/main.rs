@@ -12,10 +12,11 @@ fn again(args: Vec<String>) -> ExitCode {
     if args.is_empty() {
         exit(help(args));
     }
-    
+
     match Path::new("/tmp/continuous-testing").exists() {
         true => assert!(Command::new("git")
             .arg("pull")
+            .arg("--quiet")
             .current_dir("/tmp/continuous-testing")
             .spawn()
             .expect("failed to find git")
