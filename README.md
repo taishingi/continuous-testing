@@ -1,4 +1,4 @@
-# Installation
+# A continuous templates for linux user
 
 * [**Template of the project**](https://github.com/taishingi/continuous-template)
   * [**Docker**](https://docs.docker.com/engine/install/), [**Packer**](https://developer.hashicorp.com/packer/docs), [**Git**](https://git-scm.com) must be installed on your system.
