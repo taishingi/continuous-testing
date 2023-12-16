@@ -192,21 +192,21 @@ function main() {
             cd continuous/rust || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "$(pwd)/.icon/icon.png"  "All tests passes for $(pwd | sed 's#.*/##') project"
+            notify-send -i "$(pwd).icon/icon.png"  "All tests passes for $(pwd | sed 's#.*/##') project"
         elif [ ! -z "${dub}" ]
         then
             send
             cd continuous/d || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "$(pwd)/.icon/icon.png"  "All tests passes for $(pwd | sed 's#.*/##') project"
+            notify-send -i "$(pwd).icon/icon.png"  "All tests passes for $(pwd | sed 's#.*/##') project"
         elif [ ! -z "${go}" ]
         then
             send
             cd continuous/go || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "$(pwd)/.icon/icon.png"  "All tests passes for $(pwd | sed 's#.*/##') project"
+            notify-send -i "$(pwd).icon/icon.png"  "All tests passes for $(pwd | sed 's#.*/##') project"
         fi
     else
         download
