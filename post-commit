@@ -5,12 +5,13 @@ unset GIT_DIR
 DWL_URL="https://github.com/taishingi/continuous-template"
 RELEASE="0.0.5"
 SUM="b54e5a4a153fe9aac4bc2482c53260c5d7f23b6e551156a67588563be737c513  ${RELEASE}"
-DIR=$(realpath .)
 BRANCHES=('master')
 REMOTES=('origin')
 PROVIDER=""
 USERNAME=""
 REPOSITORY=""
+DIR="continuous"
+
 Color_Off='\033[0m'       # Text Reset
 
 # Regular Colors
@@ -83,6 +84,8 @@ On_IPurple='\033[0;105m'  # Purple
 On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
 
+
+
 function scripts()
 {
     toml=$(fd -e toml)
@@ -91,93 +94,19 @@ function scripts()
     
     if [ ! -z "${dub}" ]
     then
-        cd continuous/d || exit 1
+        cd "${DIR}/d" || exit 1
         ./scripts-gen "${1}" "${2}" "${3}" || exit 1
     elif [ ! -z "${toml}" ]
     then
-        cd continuous/rust || exit 1
+        cd "${DIR}/rust" || exit 1
         ./scripts-gen "${1}" "${2}" "${3}" || exit 1
     elif [ ! -z "${go}" ]
     then
         cd continuous/go || exit 1
         ./scripts-gen "${1}" "${2}" "${3}" || exit 1
+    else
+        exit 1
     fi
-}
-
-function set_project()
-{
-    l=""
-    while [ -z $l ]
-    do
-        echo -e -n "${Blue}Please enter your language ${White}[${Blue}d${White}|${Blue}rust${White}|${Blue}go${White}|${Blue}custom${White}] : "
-        read l
-        case "$l" in
-            go)
-                module=""
-                version=""
-                while [ -z "${module}" ]
-                do
-                    echo -e -n "${Blue}Please enter the${White} name of the module : "
-                    read module
-                done
-                while [ -z "${version}" ]
-                do
-                    echo -e -n "${Blue}Please enter the${White} module version : "
-                    read version
-                    case "${version}" in
-                        "v0|v1")
-                            module="${module}/m"
-                            version="${version}"
-                        ;;
-                        "v2")
-                            module="${module}/m/v2"
-                            version="${version}"
-                        ;;
-                        *)
-                            version=""
-                        ;;
-                    esac
-                done
-                
-                go mod init "${module}" || exit 1
-            ;;
-            "custom")
-                cmd=""
-                while [ -z "${cmd}" ]
-                do
-                    echo -e -n "${Blue}Please enter the${White} command line to init the project : "
-                    read cmd
-                done
-                `$cmd` && echo -e  "${White}[ ${Green}OK${White} ] success${Reset}" || exit 1
-            ;;
-            rust)
-                crate=""
-                executable=""
-                while [ -z "${crate}" ]
-                do
-                    echo -e -n "${Blue}Please enter the${White} name of the project : "
-                    read crate
-                done
-                
-                while [ -z "${executable}" ]
-                do
-                    echo -e -n "${Blue}Project is a ${White}program project [${Blue}y${White}|${Blue}Y${White}|${Blue}n${White}|${Blue}N${White}] : "
-                    
-                    read executable
-                    
-                    if [[ "${executable}" == "y" || "${executable}" == "Y" ]]
-                    then
-                        cargo new --bin ${crate} || exit 1
-                    else
-                        cargo new --lib ${crate} || exit 1
-                    fi
-                done
-            ;;
-            d)
-                dub init . || exit 1
-            ;;
-        esac
-    done
 }
 
 function ask()
@@ -236,11 +165,11 @@ function download() {
     
     git clone --quiet ${DWL_URL} .repo && cd .repo  && git fetch --all --tags  && git checkout -b "${USER}" ${RELEASE} && git range-diff 0.0.4...0.0.5 && cd .. || exit 1
     
-    if [ -d "./continuous" ]
+    if [ -d "${DIR}" ]
     then
-        rm -rf ./continuous
+        rm -rf "${DIR}"
     fi
-    mv .repo continuous
+    mv .repo "${DIR}"
 }
 
 function main() {
@@ -252,10 +181,11 @@ function main() {
     
     if [[ -z "${files}" ]]
     then
-        set_project
+        echo -e "${White}[${Red} KO ] no files are founded"
+        exit 1
     fi
     
-    if [ -d "./continuous" ]
+    if [ -d "${DIR}" ]
     then
         if [ ! -z "${toml}" ]
         then
@@ -285,7 +215,7 @@ function main() {
 
 function send()
 {
-    if [ -d "${DIR}/continuous" ];then
+    if [ -d "${DIR}" ];then
         
         for r in "${REMOTES[@]}";do
             for b in "${BRANCHES[@]}";do
