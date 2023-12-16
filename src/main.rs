@@ -1,4 +1,5 @@
 use std::{
+    fs,
     path::Path,
     process::{exit, Command, ExitCode},
 };
@@ -34,6 +35,23 @@ fn again(args: Vec<String>) -> ExitCode {
             .expect("")
             .success()),
     }
+
+    match Path::new(".icon").exists() {
+        true => assert!(true),
+        false => {
+            fs::create_dir(".icon").expect("failed to create the .icon directory");
+            assert!(Command::new("cp")
+                .arg("/tmp/continuous-testing/.icon/icon.png")
+                .arg(".icon/icon.png")
+                .current_dir(".")
+                .spawn()
+                .expect("cp not found")
+                .wait()
+                .expect("")
+                .success());
+        }
+    }
+
     assert!(Command::new("cp")
         .arg("/tmp/continuous-testing/post-commit")
         .arg(".git/hooks/post-commit")
