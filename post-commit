@@ -153,7 +153,7 @@ function ask()
         scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
     else
         scripts "${PROVIDER}" "${USERNAME}" "${REPOSITORY}"
-        echo -e "${White}[${Yellow} Warning${White} ] repository not found at the ${URL}"
+        echo -e "${White}[${Yellow} Warning${White} ] The repository not exists at the url : ${URL}"
     fi
 }
 
