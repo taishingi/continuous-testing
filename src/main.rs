@@ -80,6 +80,7 @@ fn again(args: Vec<String>) -> ExitCode {
     exit(0);
 }
 
+#[cfg(target_os = "linux")]
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().collect();
 
