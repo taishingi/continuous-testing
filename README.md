@@ -11,6 +11,8 @@
 cargo install continuous-testing
 ```
 
+![demonstration](https://raw.githubusercontent.com/taishingi/continuous-testing/master/again.gif)
+
 ## Arch user installation
 
 ```bash
