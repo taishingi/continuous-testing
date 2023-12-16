@@ -215,6 +215,10 @@ function main() {
         ask
         notify-send -i "${REAL_DIR}/.icon/notif.png"  "${PROJECT} it's now tracked by continuous-testing"
     fi
+    if [-x "/usr/bin/gh" ]
+    then
+        gh repo view
+    fi
     exit 0
 }
 
