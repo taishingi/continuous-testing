@@ -1,11 +1,11 @@
 [package]
 name = "continuous-testing"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 description = "A continuous testing tool"
 license = "GPL-2.0-or-later"
 repository = "https://github.com/taishingi/continuous-testing"
-
+documentation = "https://docs.rs/continuous-testing/"
 
 [[bin]]
 name = "again"
