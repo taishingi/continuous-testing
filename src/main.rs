@@ -7,6 +7,7 @@ use std::{
 
 const HOOK: &str = ".git/hooks/post-commit";
 const TMP_DIR: &str = "/tmp/continuous-testing";
+const CONTINUOUS: &str = "continuous";
 const TMP_HOOK: &str = "/tmp/continuous-testing/post-commit";
 const ICON_DIR: &str = ".icon";
 
@@ -55,6 +56,16 @@ fn again(args: &[String]) -> ExitCode {
     let mut perms: Permissions = file.metadata().expect("Failed to get").permissions();
     perms.set_mode(0o744);
     assert_eq!(perms.mode(), 0o744);
+
+    if !Path::new(CONTINUOUS).exists() {
+        assert!(Command::new("bash")
+            .arg(HOOK)
+            .spawn()
+            .expect("Failed to start hook")
+            .wait()
+            .expect("msg")
+            .success());
+    }
     exit(0);
 }
 
