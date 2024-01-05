@@ -3,10 +3,12 @@ name = "continuous-testing"
 version = "1.1.0"
 edition = "2021"
 description = "A continuous testing tool"
-license = "GPL-2.0-or-later"
+license-file = "LICENSE" 
 repository = "https://github.com/taishingi/continuous-testing"
 categories = ["development-tools"]
 keywords = ["continuous", "testing"]
+authors = ["Willy Micieli"]
+readme = "README.md"
 
 [[bin]]
 name = "again"
