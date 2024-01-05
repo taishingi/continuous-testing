@@ -156,9 +156,6 @@ again init
 
 ```bash
 git add .
-```
-
-```bash
 git commit -m "msg"
 ```
 
