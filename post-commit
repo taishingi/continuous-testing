@@ -1,11 +1,11 @@
 #!/bin/bash
 
+REMOTES=$(git remote show)
+
 unset GIT_DIR
 
 DWL_URL="https://github.com/taishingi/continuous-template"
 RELEASE="0.0.6"
-BRANCHES=('master')
-REMOTES=('origin')
 PROVIDER=""
 USERNAME=""
 REPOSITORY=""
@@ -13,9 +13,9 @@ DIR="continuous"
 PROJECT=$(pwd | sed 's#.*/##')
 REAL_DIR=$(realpath .)
 
-Color_Off='\033[0m'       # Text Reset
+Reset='\033[0m'       # Text Reset
 
-# Regular Colors
+# RegulaEr Colors
 Black='\033[0;30m'        # Black
 Red='\033[0;31m'          # Red
 Green='\033[0;32m'        # Green
@@ -218,10 +218,11 @@ function main() {
     if [ -x "/usr/bin/gh" ]
     then
         clear
-        cd ${REAL_DIR}
+        cd "${REAL_DIR}" || exit 1
         gh repo view
         echo
     fi
+    echo -e "${Reset}"
     exit 0
 }
 
@@ -230,10 +231,8 @@ function send()
     if [ -d "${DIR}" ];then
         
         for r in "${REMOTES[@]}";do
-            for b in "${BRANCHES[@]}";do
-                git push "${r}" "${b}"
-                git push "${r}" --tags
-            done
+            git push "${r}" --all
+            git push "${r}" --tags
         done
     fi
 }

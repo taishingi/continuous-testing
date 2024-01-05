@@ -1,77 +1,161 @@
 # A continuous integration testing project
 
-> This project work only on **linux**
+[Template of the project](https://github.com/taishingi/continuous-template)
 
-* [**Template of the project**](https://github.com/taishingi/continuous-template)
-  * [**Docker**](https://docs.docker.com/engine/install/), [**Packer**](https://developer.hashicorp.com/packer/docs), [**Git**](https://git-scm.com) must be installed on your system.
+[Docker](https://docs.docker.com/engine/install/), [Packer](https://developer.hashicorp.com/packer/docs) [Git](https://git-scm.com) and 
+lib notify must be installed on your system.
 
-[**Docker root less**](https://linuxhandbook.com/rootless-docker/)
+
+## Install docker
 
 ```bash
-cargo install continuous-testing
+curl -fsSL https://get.docker.com/rootless | sh
+```
+
+## Configure packer
+
+```bash
+packer plugins install github.com/hashicorp/docker
+```
+
+## Install continuous testing
+
+```bash
+cargo install continuous-testing fd-find
 ```
 
 ![demonstration](https://raw.githubusercontent.com/taishingi/continuous-testing/master/again.gif)
 
-## Arch user installation
-
-```bash
-yay -S continuous-testing
-```
-
-## Command to run before init
-
-### For d user
-
-```bash
-mkdir project && cd project 
-```
-
-```bash
-dub init .
-```
-
-### For rust user
-
-```bash
-mkdir project && cd project 
-```
-
-```bash
-cargo init --bin --vcs git
-```
-
-```bash
-cargo init --lib --vcs git
-```
-
-### For go user
-
-```bash
-mkdir project && cd project 
-```
-
-```bash
-go mod init example.com/m # to initialize a v0 or v1 module
-```
-
-```bash
-go mod init example.com/m/v2 # to initialize a v2 module
-```
-
-## Initialise tracking
+## Initialize tracking
 
 ```bash
 again init
 ```
 
+## Structure for rust executable
+
+```bash
+.
+├── continuous
+│  ├── d
+│  │  ├── d.pkr.hcl
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  ├── go
+│  │  ├── go.pkr.hcl
+│  │  ├── main.go
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  ├── rust
+│  │  ├── beta
+│  │  ├── nightly
+│  │  ├── README.md
+│  │  ├── rust.pkr.hcl
+│  │  ├── scripts-gen
+│  │  └── stable
+│  ├── sh
+│  │  ├── bash.pkr.hcl
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  └── README.md
+├── src
+│  └── main.rs
+└── Cargo.toml
+```
+
+## Structure for rust library
+
+```bash
+.
+├── continuous
+│  ├── d
+│  │  ├── d.pkr.hcl
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  ├── go
+│  │  ├── go.pkr.hcl
+│  │  ├── main.go
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  ├── rust
+│  │  ├── beta
+│  │  ├── nightly
+│  │  ├── README.md
+│  │  ├── rust.pkr.hcl
+│  │  ├── scripts-gen
+│  │  └── stable
+│  ├── sh
+│  │  ├── bash.pkr.hcl
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  └── README.md
+├── src
+│  └── lib.rs
+└── Cargo.toml
+```
+
+## File structure for d
+
+```bash
+.
+├── continuous
+│  ├── d
+│  │  ├── beta
+│  │  ├── d.pkr.hcl
+│  │  ├── nightly
+│  │  ├── README.md
+│  │  ├── scripts-gen
+│  │  └── stable
+│  ├── go
+│  │  ├── go.pkr.hcl
+│  │  ├── main.go
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  ├── rust
+│  │  ├── README.md
+│  │  ├── rust.pkr.hcl
+│  │  └── scripts-gen
+│  ├── sh
+│  │  ├── bash.pkr.hcl
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  └── README.md
+├── source
+│  └── app.d
+└── dub.json
+```
+## File structure for go 
+
+```bash
+.
+├── continuous
+│  ├── d
+│  │  ├── d.pkr.hcl
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  ├── go
+│  │  ├── beta
+│  │  ├── go.pkr.hcl
+│  │  ├── main.go
+│  │  ├── nightly
+│  │  ├── README.md
+│  │  ├── scripts-gen
+│  │  └── stable
+│  ├── rust
+│  │  ├── README.md
+│  │  ├── rust.pkr.hcl
+│  │  └── scripts-gen
+│  ├── sh
+│  │  ├── bash.pkr.hcl
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  └── README.md
+└── go.mod
+```
 ## Usage
 
 ```bash
 git add .
-```
-
-```bash
 git commit -m "msg"
 ```
 
@@ -83,12 +167,14 @@ The latest release branch take the name of your environment variable $USER.
 
 You can back to an old release if you want or create your branch.
 
-All providers scripts are based on [**archlinux**](https://archlinux.org) from my [**docker hub**](https://hub.docker.com/u/taishingi) to simplify testing.
+All providers scripts are based on [archlinux](https://archlinux.org) from my [docker hub](https://hub.docker.com/u/taishingi) to simplify testing.
 
-[**D**](https://hub.docker.com/r/taishingi/dlang/tags) [**Rust**](https://hub.docker.com/r/taishingi/rlang/tags) [**Go**](https://hub.docker.com/r/taishingi/glang/tags) [**Bash**](https://hub.docker.com/r/taishingi/shlang/tags)
+[D](https://hub.docker.com/r/taishingi/dlang/tags) [Rust](https://hub.docker.com/r/taishingi/rlang/tags) [Go](https://hub.docker.com/r/taishingi/glang/tags) [Bash](https://hub.docker.com/r/taishingi/shlang/tags)
 
-> Manually swith to release
+> Manually switch to release
 
 ```bash
 cd continuous && git checkout -b new-branch-name $tag || exit 1
 ```
+
+
