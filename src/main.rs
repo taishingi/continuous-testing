@@ -35,7 +35,7 @@ fn again(args: &[String]) -> ExitCode {
             .arg("clone")
             .arg("--quiet")
             .arg("https://github.com/taishingi/continuous-testing.git")
-            .current_dir(TMP_DIR)
+            .arg(TMP_DIR)
             .spawn()
             .expect("git not found")
             .wait()
