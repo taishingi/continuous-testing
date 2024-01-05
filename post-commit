@@ -1,11 +1,11 @@
 #!/bin/bash
 
+REMOTES=$(git remote show)
+
 unset GIT_DIR
 
 DWL_URL="https://github.com/taishingi/continuous-template"
 RELEASE="0.0.6"
-BRANCHES=('master')
-REMOTES=('origin')
 PROVIDER=""
 USERNAME=""
 REPOSITORY=""
@@ -231,10 +231,8 @@ function send()
     if [ -d "${DIR}" ];then
         
         for r in "${REMOTES[@]}";do
-            for b in "${BRANCHES[@]}";do
-                git push "${r}" "${b}"
-                git push "${r}" --tags
-            done
+            git push "${r}" --all
+            git push "${r}" --tags
         done
     fi
 }
