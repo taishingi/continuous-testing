@@ -2,7 +2,8 @@
 
 [Template of the project](https://github.com/taishingi/continuous-template)
 
-[Docker](https://docs.docker.com/engine/install/), [Packer](https://developer.hashicorp.com/packer/docs) and [Git](https://git-scm.com) must be installed on your system.
+[Docker](https://docs.docker.com/engine/install/), [Packer](https://developer.hashicorp.com/packer/docs) [Git](https://git-scm.com) and 
+lib notify must be installed on your system.
 
 
 ## Install docker
@@ -93,6 +94,64 @@ again init
 └── Cargo.toml
 ```
 
+## File structure for d
+
+```bash
+.
+├── continuous
+│  ├── d
+│  │  ├── beta
+│  │  ├── d.pkr.hcl
+│  │  ├── nightly
+│  │  ├── README.md
+│  │  ├── scripts-gen
+│  │  └── stable
+│  ├── go
+│  │  ├── go.pkr.hcl
+│  │  ├── main.go
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  ├── rust
+│  │  ├── README.md
+│  │  ├── rust.pkr.hcl
+│  │  └── scripts-gen
+│  ├── sh
+│  │  ├── bash.pkr.hcl
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  └── README.md
+├── source
+│  └── app.d
+└── dub.json
+```
+## File structure for go 
+
+```bash
+.
+├── continuous
+│  ├── d
+│  │  ├── d.pkr.hcl
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  ├── go
+│  │  ├── beta
+│  │  ├── go.pkr.hcl
+│  │  ├── main.go
+│  │  ├── nightly
+│  │  ├── README.md
+│  │  ├── scripts-gen
+│  │  └── stable
+│  ├── rust
+│  │  ├── README.md
+│  │  ├── rust.pkr.hcl
+│  │  └── scripts-gen
+│  ├── sh
+│  │  ├── bash.pkr.hcl
+│  │  ├── README.md
+│  │  └── scripts-gen
+│  └── README.md
+└── go.mod
+```
 ## Usage
 
 ```bash
@@ -120,4 +179,5 @@ All providers scripts are based on [archlinux](https://archlinux.org) from my [d
 ```bash
 cd continuous && git checkout -b new-branch-name $tag || exit 1
 ```
-## File structure
+
+
