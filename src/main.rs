@@ -46,11 +46,10 @@ fn again(args: &[String]) -> ExitCode {
 
     if !Path::new(ICON_DIR).exists() {
         fs::create_dir(ICON_DIR).expect("failed to create the .icon directory");
-        fs::copy("/tmp/continuous-testing/.icon/notif.png", ".icon/notif.png")
-            .expect("failed to copy image");
+        assert!(fs::copy("/tmp/continuous-testing/.icon/notif.png", ".icon/notif.png").is_ok());
     }
 
-    fs::copy(TMP_HOOK, HOOK).expect("Failed to copy hook");
+    assert!(fs::copy(TMP_HOOK, HOOK).is_ok());
 
     let file: File = File::open(HOOK).expect("Failed to open hook");
     let mut perms: Permissions = file.metadata().expect("Failed to get").permissions();
@@ -69,7 +68,6 @@ fn again(args: &[String]) -> ExitCode {
     exit(0);
 }
 
-#[cfg(target_os = "linux")]
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().collect();
 
