@@ -18,7 +18,7 @@ fn help(args: &[String]) -> i32 {
     1
 }
 
-fn again(args: &[String]) -> i32 {
+fn init(args: &[String]) -> i32 {
     if args.is_empty() {
         exit(help(args));
     }
@@ -81,7 +81,7 @@ fn main() -> ExitCode {
                 println!("Already initialized");
                 exit(0);
             }
-            exit(again(&args));
+            exit(init(&args));
         } else if !Path::new(".git").exists() {
             assert!(Command::new("git")
                 .arg("init")
@@ -90,7 +90,7 @@ fn main() -> ExitCode {
                 .wait()
                 .expect("")
                 .success());
-            exit(again(&args));
+            exit(init(&args));
         } else if args.get(1).expect("failed to get argument").eq("upgrade")
             && Path::new(HOOK).exists()
         {
