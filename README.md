@@ -98,6 +98,12 @@ cargo install continuous-testing fd-find
 again init
 ```
 
+### Update hook file
+
+```bash
+again upgrade
+```
+
 ### Usage
 
 ```bash

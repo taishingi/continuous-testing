@@ -96,7 +96,7 @@ fn main() -> ExitCode {
         {
             fs::remove_file(HOOK).expect("failed to remove file");
             assert!(Command::new("wget")
-                .arg("")
+                .arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/post-commit")
                 .current_dir(HOOK_DIR)
                 .spawn()
                 .expect("Failed to upgrade the script")
