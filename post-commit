@@ -10,7 +10,6 @@ PROVIDER=""
 USERNAME=""
 REPOSITORY=""
 DIR="continuous"
-PROJECT=$(pwd | sed 's#.*/##')
 REAL_DIR=$(realpath .)
 
 Reset='\033[0m'           # Text Reset
@@ -117,7 +116,7 @@ function main() {
     if [[ -z "${files}" ]]
     then
         echo -e "${White}[${Red} KO ${White}] No files are founded${Reset}"
-        exit 0
+        exit 1
     fi
     
     if [ -d "${DIR}" ]
@@ -128,26 +127,22 @@ function main() {
             cd continuous/rust || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "${REAL_DIR}/.icon/notif.png"  "All tests passes for your ${PROJECT} project"
         elif [ ! -z "${dub}" ]
         then
             send
             cd continuous/d || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "${REAL_DIR}/.icon/notif.png" "All tests passes for your ${PROJECT} project"
         elif [ ! -z "${go}" ]
         then
             send
             cd continuous/go || exit 1
             packer validate . || exit 1
             packer build . || exit 1
-            notify-send -i "${REAL_DIR}/.icon/notif.png"  "All tests passes for your ${PROJECT} project"
         fi
     else
         download
         ask
-        notify-send -i "${REAL_DIR}/.icon/notif.png"  "${PROJECT} it's now tracked by continuous-testing"
     fi
     if [ -x "/usr/bin/gh" ]
     then
