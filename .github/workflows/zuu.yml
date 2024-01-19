@@ -11,6 +11,8 @@ env:
 jobs:
   zuu:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
     - uses: actions/checkout@v3
     - name: deps
