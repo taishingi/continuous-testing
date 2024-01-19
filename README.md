@@ -28,6 +28,12 @@ cd continuous && git checkout -b new-branch-name $tag || exit 1
 
 ![demonstration](https://raw.githubusercontent.com/taishingi/continuous-testing/master/again.gif)
 
+![Audit](https://raw.githubusercontent.com/taishingi/continuous-testing/master/badges/social/audit.svg)
+![Check](https://raw.githubusercontent.com/taishingi/continuous-testing/master/badges/social/check.svg)
+![Clippy](https://raw.githubusercontent.com/taishingi/continuous-testing/master/badges/social/clippy.svg)
+![Format](https://raw.githubusercontent.com/taishingi/continuous-testing/master/badges/social/fmt.svg)
+![Test](https://raw.githubusercontent.com/taishingi/continuous-testing/master/badges/social/test.svg)
+
 ## GitHub workflow
 
 ```yaml

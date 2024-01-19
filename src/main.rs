@@ -6,6 +6,7 @@ use std::{
 };
 
 const HOOK: &str = ".git/hooks/post-commit";
+const HOOK_DIR: &str = ".git/hooks";
 const TMP_DIR: &str = "/tmp/continuous-testing";
 const CONTINUOUS: &str = "continuous";
 const TMP_HOOK: &str = "/tmp/continuous-testing/post-commit";
@@ -13,10 +14,11 @@ const ICON_DIR: &str = ".icon";
 
 fn help(args: &[String]) -> i32 {
     println!("{} init         : Init the repository", args[0]);
-    0
+    println!("{} upgrade      : Upgrade the hook file", args[0]);
+    1
 }
 
-fn again(args: &[String]) -> ExitCode {
+fn again(args: &[String]) -> i32 {
     if args.is_empty() {
         exit(help(args));
     }
@@ -64,33 +66,44 @@ fn again(args: &[String]) -> ExitCode {
             .wait()
             .expect("msg")
             .success());
+        return 0;
     }
-    exit(0);
+    println!("run -> again init");
+    1
 }
 
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().collect();
 
     if args.len() == 2 {
-        if args[1].eq("init") {
-            if Path::new(".git").is_dir() {
-                if Path::new(HOOK).is_file() {
-                    println!("Already initialized");
-                    exit(0);
-                } else {
-                    return again(&args);
-                }
-            } else {
-                assert!(Command::new("git")
-                    .arg("init")
-                    .spawn()
-                    .expect("Git not found")
-                    .wait()
-                    .expect("")
-                    .success());
-
-                return again(&args);
+        if args.get(1).expect("Failed to get argument").eq("init") {
+            if Path::new(".git").is_dir() && Path::new(HOOK).exists() {
+                println!("Already initialized");
+                exit(0);
             }
+            exit(again(&args));
+        } else if !Path::new(".git").exists() {
+            assert!(Command::new("git")
+                .arg("init")
+                .spawn()
+                .expect("Git not found")
+                .wait()
+                .expect("")
+                .success());
+            exit(again(&args));
+        } else if args.get(1).expect("failed to get argument").eq("upgrade")
+            && Path::new(HOOK).exists()
+        {
+            fs::remove_file(HOOK).expect("failed to remove file");
+            assert!(Command::new("wget")
+                .arg("")
+                .current_dir(HOOK_DIR)
+                .spawn()
+                .expect("Failed to upgrade the script")
+                .wait()
+                .expect("")
+                .success());
+            exit(0);
         }
         exit(help(&args));
     }
