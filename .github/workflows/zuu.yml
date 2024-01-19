@@ -7,12 +7,14 @@ on:
 env:
   CARGO_TERM_COLOR: always
   TERM: xterm-256color
+  USER: taishingi
 jobs:
   zuu:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: deps
-      run: sudo apt-get install -y wget && wget https://raw.githubusercontent.com/taishingi/zuu/master/pre-commit
+      run: sudo apt-get install -y git wget && git clone https://github.com/taishingi/continuous-testing.git c && cd c && cargo install --path .
     - name: zuu
-      run: bash pre-commit
+      run:  wget https://raw.githubusercontent.com/taishingi/zuu/master/pre-commit && bash pre-commit
+    
