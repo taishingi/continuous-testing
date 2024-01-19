@@ -98,10 +98,15 @@ cargo install continuous-testing fd-find
 again init
 ```
 
-### Update hook file
+### Again configuration
 
-```bash
-again upgrade
+```yaml
+# again.yaml
+repository: continuous-testing  # Repository name
+username: taishingi             # Repository username
+domain: github.com              # Repository domain
+language: rust                  # Repository language
+remote: origin                  # The remote name for push
 ```
 
 ### Usage

@@ -102,7 +102,15 @@ fn init() -> i32 {
         )
         .is_ok());
     }
-
+    assert!(Command::new("wget")
+        .arg("-q")
+        .arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/again.yaml")
+        .current_dir(".")
+        .spawn()
+        .expect("Failed to find wget")
+        .wait()
+        .expect("")
+        .success());
     assert_eq!(init_hook(), 0);
     assert_eq!(init_continuous(), 0);
     0
@@ -117,11 +125,11 @@ fn yaml(key: &str) -> String {
 fn gen_script() -> i32 {
     let dir = format!("{CONTINUOUS}/{}", yaml("language"));
     let repository = yaml("repository");
-    let provider = yaml("provider");
+    let domain = yaml("domain");
     let username = yaml("username");
     assert!(Command::new("bash")
         .arg("scripts-gen")
-        .arg(provider.as_str())
+        .arg(domain.as_str())
         .arg(username.as_str())
         .arg(repository.as_str())
         .current_dir(dir.as_str())
