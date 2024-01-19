@@ -1,9 +1,8 @@
 use marked_yaml::parse_yaml;
 use notifme::Notification;
 use std::env::current_dir;
-use std::fs::{File, Permissions};
+use std::fs::File;
 use std::io::Write;
-use std::os::unix::fs::PermissionsExt;
 use std::{
     fs,
     path::Path,
@@ -15,12 +14,18 @@ const ICON_DIR: &str = ".icons";
 const RELEASE: &str = "0.0.6";
 fn init_hook() -> i32 {
     let mut f = File::create(HOOK).expect("");
-    let metadata = f.metadata().expect("");
-    let mut permissions: Permissions = metadata.permissions();
-    permissions.set_mode(0o755);
     f.write_all(b"#!/bin/bash\n\nunset GIT_DIR\n\nagain\n\nexit $?\n\n")
         .expect("failed to write file");
     f.sync_data().expect("failed to write file");
+    assert!(Command::new("chmod")
+        .arg("+x")
+        .arg(HOOK)
+        .current_dir(".")
+        .spawn()
+        .expect("chmod not founded")
+        .wait()
+        .expect("")
+        .success());
     send(project().as_str(), "Is now tracked by continuous testing")
 }
 fn help(args: &[String]) -> i32 {
