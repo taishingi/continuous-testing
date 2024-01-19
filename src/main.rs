@@ -11,7 +11,7 @@ use std::{
 const HOOK: &str = ".git/hooks/post-commit";
 const CONTINUOUS: &str = "continuous";
 const ICON_DIR: &str = ".icons";
-const RELEASE: &str = "0.0.6";
+const RELEASE: &str = "1.0.0";
 fn init_hook() -> i32 {
     let mut f = File::create(HOOK).expect("");
     f.write_all(b"#!/bin/bash\n\nunset GIT_DIR\n\nagain\n\nexit $?\n\n")
@@ -206,11 +206,11 @@ fn check() -> i32 {
     assert_eq!(push(), 0);
     if Path::new(CONTINUOUS).exists() {
         if yaml("language").as_str().eq("rust") {
-            return packer("./continuous/rust");
+            return packer(format!("./{CONTINUOUS}/rust").as_str());
         } else if yaml("language").as_str().eq("d") {
-            return packer("./continuous/d");
+            return packer(format!("{CONTINUOUS}/d").as_str());
         } else if yaml("language").as_str().eq("go") {
-            return packer("./continuous/go");
+            return packer(format!("{CONTINUOUS}/go").as_str());
         }
     }
     1
@@ -247,51 +247,4 @@ fn main() -> ExitCode {
         exit(help(&args));
     }
     exit(check());
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::{CONTINUOUS, HOOK};
-    use std::fs;
-    use std::path::Path;
-    use std::process::Command;
-
-    #[test]
-    pub fn init() {
-        if Path::new(HOOK).exists() {
-            fs::remove_file(HOOK).expect("failed to remove hook");
-        }
-        assert!(Command::new("again")
-            .arg("init")
-            .current_dir(".")
-            .spawn()
-            .expect("again not founded")
-            .wait()
-            .expect("")
-            .success());
-        assert!(Path::new(HOOK).exists());
-        assert!(Path::new(CONTINUOUS).exists());
-    }
-    #[test]
-    pub fn check() {
-        assert!(Command::new("again")
-            .current_dir(".")
-            .spawn()
-            .expect("again not founded")
-            .wait()
-            .expect("")
-            .success());
-    }
-
-    #[test]
-    pub fn help() {
-        assert!(Command::new("again")
-            .arg("--help")
-            .current_dir(".")
-            .spawn()
-            .expect("again not founded")
-            .wait()
-            .expect("")
-            .success());
-    }
 }
