@@ -13,6 +13,7 @@ const ICON_DIR: &str = ".icon";
 
 fn help(args: &[String]) -> i32 {
     println!("{}              : Run the hook", args[0]);
+    println!("{} --help       : Display help", args[0]);
     println!("{} init         : Init the repository", args[0]);
     println!("{} upgrade      : Upgrade the hook file", args[0]);
     1
@@ -134,9 +135,14 @@ fn main() -> ExitCode {
                 .success());
 
             exit(0);
-        } else {
+        } else if !Path::new(HOOK).exists()
+            && args.get(1).expect("failed to get argument").eq("upgrade")
+        {
             println!("run -> again init");
             exit(1);
+        } else if args.get(1).expect("failed to get argument").eq("--help") {
+            let _ = help(&args);
+            exit(0);
         }
     }
     exit(help(&args));
