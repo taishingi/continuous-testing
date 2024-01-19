@@ -1,44 +1,45 @@
+use marked_yaml::parse_yaml;
 use notifme::Notification;
 use std::env::current_dir;
-use std::fs::File;
+use std::fs::{File, Permissions};
+use std::io::Write;
+use std::os::unix::fs::PermissionsExt;
 use std::{
     fs,
     path::Path,
     process::{exit, Command, ExitCode},
 };
-
 const HOOK: &str = ".git/hooks/post-commit";
-const HOOK_DIR: &str = ".git/hooks";
-const TMP_DIR: &str = "/tmp/continuous-testing";
 const CONTINUOUS: &str = "continuous";
 const ICON_DIR: &str = ".icons";
-
-fn init_hook() {
-    assert!(Command::new("wget")
-        .arg("-q")
-        .arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/post-commit")
-        .current_dir(HOOK_DIR)
-        .spawn()
-        .expect("Failed to upgrade the script")
-        .wait()
-        .expect("")
-        .success());
-    assert!(Command::new("chmod")
-        .arg("+x")
-        .arg(HOOK)
-        .current_dir(".")
-        .spawn()
-        .expect("failed to run chmod")
-        .wait()
-        .expect("")
-        .success());
+const RELEASE: &str = "0.0.6";
+fn init_hook() -> i32 {
+    let mut f = File::create(HOOK).expect("");
+    let metadata = f.metadata().expect("");
+    let mut permissions: Permissions = metadata.permissions();
+    permissions.set_mode(0o755);
+    f.write_all(b"#!/bin/bash\n\nunset GIT_DIR\n\nagain\n\nexit $?\n\n")
+        .expect("failed to write file");
+    f.sync_data().expect("failed to write file");
+    send(project().as_str(), "Is now tracked by continuous testing")
 }
 fn help(args: &[String]) -> i32 {
     println!("{}              : Run the hook", args[0]);
     println!("{} --help       : Display help", args[0]);
     println!("{} init         : Init the repository", args[0]);
-    println!("{} upgrade      : Upgrade the hook file", args[0]);
-    1
+    0
+}
+
+fn project() -> String {
+    current_dir()
+        .expect("")
+        .as_path()
+        .iter()
+        .last()
+        .expect("")
+        .to_str()
+        .expect("failed to get current dir")
+        .to_string()
 }
 fn commit() -> String {
     if Path::new("commit").is_file() {
@@ -56,45 +57,34 @@ fn commit() -> String {
         .wait()
         .expect("")
         .success());
-
     fs::read_to_string("commit").expect("failed to read the commit file")
 }
-fn send(summary: &str, body: &str) {
+fn send(summary: &str, body: &str) -> i32 {
     let icon = format!("{}/{ICON_DIR}/continuous.png", env!("HOME"));
 
     assert!(Notification::new()
-        .app("Continuous testing")
+        .app(project().as_str())
         .icon(icon.as_str())
         .summary(summary)
         .body(body)
         .send());
+    0
 }
-fn init(args: &[String]) -> i32 {
-    if args.is_empty() {
-        exit(help(args));
-    }
-    if Path::new(TMP_DIR).exists() {
+fn init() -> i32 {
+    if Path::new(".git").is_dir() && Path::new(HOOK).exists() {
+        println!("Already initialized");
+        exit(0);
+    } else if !Path::new(".git").exists() {
         assert!(Command::new("git")
-            .arg("pull")
-            .arg("--quiet")
-            .current_dir(TMP_DIR)
-            .spawn()
-            .expect("failed to find git")
-            .wait()
-            .expect("")
-            .success());
-    } else {
-        assert!(Command::new("git")
-            .arg("clone")
-            .arg("--quiet")
-            .arg("https://github.com/taishingi/continuous-testing.git")
-            .arg(TMP_DIR)
+            .arg("init")
+            .current_dir(".")
             .spawn()
             .expect("git not found")
             .wait()
             .expect("")
             .success());
     }
+
     let icons = format!("{}/{}", env!("HOME"), ICON_DIR);
     if !Path::new(icons.as_str()).exists() {
         fs::create_dir(icons.as_str()).expect("failed to create the icon directory");
@@ -108,103 +98,195 @@ fn init(args: &[String]) -> i32 {
         .is_ok());
     }
 
-    init_hook();
+    assert_eq!(init_hook(), 0);
+    assert_eq!(init_continuous(), 0);
+    0
+}
 
-    if !Path::new(CONTINUOUS).exists() {
-        assert!(Command::new("bash")
-            .arg(HOOK)
-            .spawn()
-            .expect("Failed to start hook")
-            .wait()
-            .expect("msg")
-            .success());
-        return 0;
+fn yaml(key: &str) -> String {
+    let binding = parse_yaml(0, include_str!("../again.yaml")).unwrap();
+    let k = binding.as_mapping().expect("").get(key);
+    k.expect("").as_scalar().expect("").to_string()
+}
+
+fn gen_script() -> i32 {
+    let dir = format!("{CONTINUOUS}/{}", yaml("language"));
+    let repository = yaml("repository");
+    let provider = yaml("provider");
+    let username = yaml("username");
+    assert!(Command::new("bash")
+        .arg("scripts-gen")
+        .arg(provider.as_str())
+        .arg(username.as_str())
+        .arg(repository.as_str())
+        .current_dir(dir.as_str())
+        .spawn()
+        .expect("bash not found")
+        .wait()
+        .expect("")
+        .success());
+    0
+}
+fn init_continuous() -> i32 {
+    assert!(Command::new("git")
+        .arg("clone")
+        .arg("--quiet")
+        .arg("https://github.com/taishingi/continuous-template.git")
+        .arg(".repo")
+        .current_dir(".")
+        .spawn()
+        .expect("git no founded")
+        .wait()
+        .expect("")
+        .success());
+    assert!(Command::new("git")
+        .arg("fetch")
+        .arg("--all")
+        .arg("--tags")
+        .current_dir(".repo")
+        .spawn()
+        .expect("git no founded")
+        .wait()
+        .expect("")
+        .success());
+    assert!(Command::new("git")
+        .arg("checkout")
+        .arg("-b")
+        .arg(env!("USER").to_string().as_str())
+        .arg(RELEASE)
+        .current_dir(".repo")
+        .spawn()
+        .expect("git no founded")
+        .wait()
+        .expect("")
+        .success());
+
+    if Path::new(CONTINUOUS).exists() {
+        fs::remove_dir_all(CONTINUOUS).expect("Failed to remove the continuous directory");
     }
-    println!("run -> again init");
+    assert!(Command::new("mv")
+        .arg(".repo")
+        .arg(CONTINUOUS)
+        .current_dir(".")
+        .spawn()
+        .expect("failed to find mv")
+        .wait()
+        .expect("")
+        .success());
+    gen_script()
+}
+
+fn packer(dir: &str) -> i32 {
+    assert!(Command::new("packer")
+        .arg("validate")
+        .arg(".")
+        .current_dir(dir)
+        .spawn()
+        .expect("")
+        .wait()
+        .expect("")
+        .success());
+    assert!(Command::new("packer")
+        .arg("build")
+        .arg(".")
+        .current_dir(dir)
+        .spawn()
+        .expect("")
+        .wait()
+        .expect("")
+        .success());
+    send(commit().as_str(), "All tests passes")
+}
+fn check() -> i32 {
+    assert_eq!(push(), 0);
+    if Path::new(CONTINUOUS).exists() {
+        if yaml("language").as_str().eq("rust") {
+            return packer("./continuous/rust");
+        } else if yaml("language").as_str().eq("d") {
+            return packer("./continuous/d");
+        } else if yaml("language").as_str().eq("go") {
+            return packer("./continuous/go");
+        }
+    }
     1
 }
 
+fn push() -> i32 {
+    assert!(Command::new("git")
+        .arg("push")
+        .arg(yaml("remote").as_str())
+        .arg("--all")
+        .current_dir(".")
+        .spawn()
+        .expect("git push error")
+        .wait()
+        .expect("")
+        .success());
+    assert!(Command::new("git")
+        .arg("push")
+        .arg(yaml("remote").as_str())
+        .arg("--tags")
+        .current_dir(".")
+        .spawn()
+        .expect("git push error")
+        .wait()
+        .expect("")
+        .success());
+    0
+}
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().collect();
+    if args.len() == 2 && args.get(1).expect("").eq("init") {
+        exit(init());
+    } else if args.len() == 2 && args.get(1).expect("").eq("--help") {
+        exit(help(&args));
+    }
+    exit(check());
+}
 
-    if args.len() == 1 && Path::new(HOOK).exists() {
-        if Command::new("bash")
-            .arg(HOOK)
+#[cfg(test)]
+mod tests {
+    use crate::{CONTINUOUS, HOOK};
+    use std::fs;
+    use std::path::Path;
+    use std::process::Command;
+
+    #[test]
+    pub fn init() {
+        if Path::new(HOOK).exists() {
+            fs::remove_file(HOOK).expect("failed to remove hook");
+        }
+        assert!(Command::new("again")
+            .arg("init")
             .current_dir(".")
             .spawn()
-            .expect("failed to execute hook file")
+            .expect("again not founded")
             .wait()
             .expect("")
-            .success()
-        {
-            send(commit().as_str(), "All test passes");
-            exit(0);
-        } else {
-            send(commit().as_str(), "Tests fail");
-            exit(1);
-        }
+            .success());
+        assert!(Path::new(HOOK).exists());
+        assert!(Path::new(CONTINUOUS).exists());
     }
-    if args.len() == 2 {
-        if args.get(1).expect("Failed to get argument").eq("init") {
-            if Path::new(".git").is_dir() && Path::new(HOOK).exists() {
-                println!("Already initialized");
-                exit(0);
-            }
-            if init(&args).eq(&0) {
-                send(
-                    current_dir()
-                        .expect("")
-                        .as_path()
-                        .to_str()
-                        .expect("failed to get current dir"),
-                    "Is now tracked by continuous testing",
-                );
-                exit(0);
-            }
-            exit(1);
-        } else if !Path::new(".git").exists() {
-            assert!(Command::new("git")
-                .arg("init")
-                .spawn()
-                .expect("Git not found")
-                .wait()
-                .expect("")
-                .success());
-            if init(&args).eq(&0) {
-                send(
-                    current_dir()
-                        .expect("")
-                        .as_path()
-                        .to_str()
-                        .expect("failed to get current dir"),
-                    "Is now tracked by continuous testing",
-                );
-                exit(0);
-            }
-            send(
-                current_dir()
-                    .expect("")
-                    .as_path()
-                    .to_str()
-                    .expect("failed to get current dir"),
-                "Failed to track the repository",
-            );
-            exit(1);
-        } else if args.get(1).expect("failed to get argument").eq("upgrade")
-            && Path::new(HOOK).exists()
-        {
-            fs::remove_file(HOOK).expect("failed to remove file");
-            init_hook();
-            exit(0);
-        } else if !Path::new(HOOK).exists()
-            && args.get(1).expect("failed to get argument").eq("upgrade")
-        {
-            println!("run -> again init");
-            exit(1);
-        } else if args.get(1).expect("failed to get argument").eq("--help") {
-            let _ = help(&args);
-            exit(0);
-        }
+    #[test]
+    pub fn check() {
+        assert!(Command::new("again")
+            .current_dir(".")
+            .spawn()
+            .expect("again not founded")
+            .wait()
+            .expect("")
+            .success());
     }
-    exit(help(&args));
+
+    #[test]
+    pub fn help() {
+        assert!(Command::new("again")
+            .arg("--help")
+            .current_dir(".")
+            .spawn()
+            .expect("again not founded")
+            .wait()
+            .expect("")
+            .success());
+    }
 }

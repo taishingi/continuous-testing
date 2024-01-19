@@ -1,0 +1,5 @@
+repository: continuous-testing
+username: taishingi
+provider: github.com
+language: rust
+remote: origin
