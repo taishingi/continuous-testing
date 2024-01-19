@@ -12,6 +12,7 @@ const TMP_HOOK: &str = "/tmp/continuous-testing/post-commit";
 const ICON_DIR: &str = ".icon";
 
 fn help(args: &[String]) -> i32 {
+    println!("{}              : Run the hook", args[0]);
     println!("{} init         : Init the repository", args[0]);
     println!("{} upgrade      : Upgrade the hook file", args[0]);
     1
@@ -114,6 +115,7 @@ fn main() -> ExitCode {
         {
             fs::remove_file(HOOK).expect("failed to remove file");
             assert!(Command::new("wget")
+                .arg("-q")
                 .arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/post-commit")
                 .current_dir(HOOK_DIR)
                 .spawn()
