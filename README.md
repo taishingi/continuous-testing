@@ -1,35 +1,99 @@
-# A continuous integration testing project
+# What it's ?
 
-[Template of the project](https://github.com/taishingi/continuous-template)
+<img src="https://raw.githubusercontent.com/taishingi/continuous-testing/master/.icon/notif.png" alt="continuous" width="250" align="right">
+
+It's a project to run continuous testing to check if the last commit have not broken something.
+
+On every commit run a git clone of your project in the container, print the latest commit, run build and tests.
+
+On your computer you will see notification after the build or on the tracking initialize.
+
+The continuous directory is now a git repository.
+
+The latest release branch take the name of your environment variable $USER.
+
+You can be back to an old release if you want or create your branch.
+
+All providers scripts are based on [archlinux](https://archlinux.org) from my [docker hub](https://hub.docker.com/u/taishingi) to simplify testing.
+
+
+[D](https://hub.docker.com/r/taishingi/dlang/tags) [Rust](https://hub.docker.com/r/taishingi/rlang/tags) [Go](https://hub.docker.com/r/taishingi/glang/tags) [Bash](https://hub.docker.com/r/taishingi/shlang/tags) [Template](https://github.com/taishingi/continuous-template)
+
+```bash
+cd continuous && git checkout -b new-branch-name $tag || exit 1
+```
+
+![demonstration](https://raw.githubusercontent.com/taishingi/continuous-testing/master/again.gif)
+
+## GitHub workflow
+
+```yaml
+name: continuous
+on:
+  push:
+    branches: [ "master" , "develop" ]
+  pull_request:
+    branches: [ "master" , "develop"]
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  continuous:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: deps 
+      run: sudo apt-get install -y curl fd-find git docker-ce docker-ce-cli containerd.io docker-buildx-plugin packer && packer plugins install github.com/hashicorp/docker
+    - name: continuous
+      run: git clone https://github.com/taishingi/continuous-template.git continuous && cd continuous/rust && ./scripts-gen "github.com" "username" "repository" && packer validate . && packer build .
+```
+
+## Local workflow 
 
 [Docker](https://docs.docker.com/engine/install/), [Packer](https://developer.hashicorp.com/packer/docs) [Git](https://git-scm.com) and 
 lib notify must be installed on your system.
 
-
-## Install docker
+### Install docker
 
 ```bash
 curl -fsSL https://get.docker.com/rootless | sh
 ```
 
-## Configure packer
+### Configure packer
 
 ```bash
 packer plugins install github.com/hashicorp/docker
 ```
 
-## Install continuous testing
+### Install continuous testing
+
+#### Archlinux
+
+![AUR License](https://img.shields.io/aur/license/continuous-testing?style=social)
+![AUR Maintainer](https://img.shields.io/aur/maintainer/continuous-testing?style=social)
+![AUR Version](https://img.shields.io/aur/version/continuous-testing?style=social)
+![AUR Votes](https://img.shields.io/aur/votes/continuous-testing?style=social)
+
+```bash
+paru -S continuous-testing
+```
+
+#### Others
 
 ```bash
 cargo install continuous-testing fd-find
 ```
 
-![demonstration](https://raw.githubusercontent.com/taishingi/continuous-testing/master/again.gif)
-
-## Initialize tracking
+### Initialize tracking
 
 ```bash
 again init
+```
+
+### Usage
+
+```bash
+git add .
+git commit -m "msg"
 ```
 
 ## Structure for rust executable
@@ -94,7 +158,7 @@ again init
 └── Cargo.toml
 ```
 
-## File structure for d
+## Structure for d 
 
 ```bash
 .
@@ -152,29 +216,6 @@ again init
 │  └── README.md
 └── go.mod
 ```
-## Usage
 
-```bash
-git add .
-git commit -m "msg"
-```
-
-## The continuous directory
-
-The continuous directory is now a git repository.
-
-The latest release branch take the name of your environment variable $USER.
-
-You can back to an old release if you want or create your branch.
-
-All providers scripts are based on [archlinux](https://archlinux.org) from my [docker hub](https://hub.docker.com/u/taishingi) to simplify testing.
-
-[D](https://hub.docker.com/r/taishingi/dlang/tags) [Rust](https://hub.docker.com/r/taishingi/rlang/tags) [Go](https://hub.docker.com/r/taishingi/glang/tags) [Bash](https://hub.docker.com/r/taishingi/shlang/tags)
-
-> Manually switch to release
-
-```bash
-cd continuous && git checkout -b new-branch-name $tag || exit 1
-```
 
 
