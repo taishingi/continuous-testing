@@ -1,6 +1,5 @@
 use std::{
-    fs::{self, File, Permissions},
-    os::unix::fs::PermissionsExt,
+    fs,
     path::Path,
     process::{exit, Command, ExitCode},
 };
@@ -53,10 +52,15 @@ fn init(args: &[String]) -> i32 {
 
     assert!(fs::copy(TMP_HOOK, HOOK).is_ok());
 
-    let file: File = File::open(HOOK).expect("Failed to open hook");
-    let mut perms: Permissions = file.metadata().expect("Failed to get").permissions();
-    perms.set_mode(0o744);
-    assert_eq!(perms.mode(), 0o744);
+    assert!(Command::new("chmod")
+        .arg("+x")
+        .arg(HOOK)
+        .current_dir(".")
+        .spawn()
+        .expect("failed to run chmod")
+        .wait()
+        .expect("")
+        .success());
 
     if !Path::new(CONTINUOUS).exists() {
         assert!(Command::new("bash")
@@ -75,6 +79,20 @@ fn init(args: &[String]) -> i32 {
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().collect();
 
+    if args.len() == 1 && Path::new(HOOK).exists() {
+        if Command::new("bash")
+            .arg(HOOK)
+            .current_dir(".")
+            .spawn()
+            .expect("failed to execute hook file")
+            .wait()
+            .expect("")
+            .success()
+        {
+            exit(0);
+        }
+        exit(1);
+    }
     if args.len() == 2 {
         if args.get(1).expect("Failed to get argument").eq("init") {
             if Path::new(".git").is_dir() && Path::new(HOOK).exists() {
@@ -103,6 +121,16 @@ fn main() -> ExitCode {
                 .wait()
                 .expect("")
                 .success());
+            assert!(Command::new("chmod")
+                .arg("+x")
+                .arg(HOOK)
+                .current_dir(".")
+                .spawn()
+                .expect("failed to run chmod")
+                .wait()
+                .expect("")
+                .success());
+
             exit(0);
         } else {
             println!("run -> again init");
