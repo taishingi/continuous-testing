@@ -104,8 +104,10 @@ fn main() -> ExitCode {
                 .expect("")
                 .success());
             exit(0);
+        } else {
+            println!("run -> again init");
+            exit(1);
         }
-        exit(help(&args));
     }
     exit(help(&args));
 }
