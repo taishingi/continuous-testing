@@ -11,7 +11,8 @@ use std::{
 const HOOK: &str = ".git/hooks/post-commit";
 const CONTINUOUS: &str = "continuous";
 const ICON_DIR: &str = ".icons";
-const RELEASE: &str = "1.0.0";
+const RELEASE: &str = "1.0.1";
+
 fn init_hook() -> i32 {
     let mut f = File::create(HOOK).expect("");
     f.write_all(b"#!/bin/bash\n\nunset GIT_DIR\n\nagain\n\nexit $?\n\n")
@@ -127,11 +128,13 @@ fn gen_script() -> i32 {
     let repository = yaml("repository");
     let domain = yaml("domain");
     let username = yaml("username");
+    let branch = yaml("branch");
     assert!(Command::new("bash")
         .arg("scripts-gen")
         .arg(domain.as_str())
         .arg(username.as_str())
         .arg(repository.as_str())
+        .arg(branch.as_str())
         .current_dir(dir.as_str())
         .spawn()
         .expect("bash not found")
