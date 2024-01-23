@@ -129,12 +129,14 @@ fn gen_script() -> i32 {
     let domain = yaml("domain");
     let username = yaml("username");
     let branch = yaml("branch");
+    let cpu = yaml("cpu");
     assert!(Command::new("bash")
         .arg("scripts-gen")
         .arg(domain.as_str())
         .arg(username.as_str())
         .arg(repository.as_str())
         .arg(branch.as_str())
+        .arg(cpu.as_str())
         .current_dir(dir.as_str())
         .spawn()
         .expect("bash not found")
