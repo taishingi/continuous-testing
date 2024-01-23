@@ -1,7 +1,0 @@
-repository: continuous-testing
-username: taishingi
-domain: github.com
-language: rust
-remote: origin
-branch: develop
-cpu: 4

@@ -1,4 +1,3 @@
-use marked_yaml::parse_yaml;
 use notifme::Notification;
 use std::env::current_dir;
 use std::fs::File;
@@ -118,19 +117,21 @@ fn init() -> i32 {
 }
 
 fn yaml(key: &str) -> String {
-    let binding = parse_yaml(0, include_str!("../again.yaml")).unwrap();
-    let k = binding.as_mapping().expect("").get(key);
-    k.expect("").as_scalar().expect("").to_string()
+    std::env::var(key).expect("")
 }
 
 fn gen_script() -> i32 {
-    let dir = format!("{CONTINUOUS}/{}", yaml("language"));
+    let dir = format!(
+        "{}/{CONTINUOUS}/{}",
+        current_dir().expect("").to_str().expect(""),
+        yaml("AGAIN_LANGUAGE")
+    );
     if Path::new(dir.as_str()).exists() {
-        let repository = yaml("repository");
-        let domain = yaml("domain");
-        let username = yaml("username");
-        let branch = yaml("branch");
-        let cpu = yaml("cpu");
+        let repository = yaml("AGAIN_REPOSITORY");
+        let domain = yaml("AGAIN_DOMAIN");
+        let username = yaml("AGAIN_USERNAME");
+        let branch = yaml("AGAIN_BRANCH");
+        let cpu = yaml("AGAIN_CPU");
         assert!(Command::new("bash")
             .arg("scripts-gen")
             .arg(domain.as_str())
@@ -197,11 +198,17 @@ fn init_continuous() -> i32 {
     gen_script()
 }
 
-fn packer(dir: &str) -> i32 {
+fn packer() -> i32 {
+    let dir = format!(
+        "{}/{CONTINUOUS}/{}",
+        current_dir().expect("").to_str().expect(""),
+        yaml("AGAIN_LANGUAGE")
+    );
+
     assert!(Command::new("packer")
         .arg("validate")
         .arg(".")
-        .current_dir(dir)
+        .current_dir(dir.as_str())
         .spawn()
         .expect("")
         .wait()
@@ -221,13 +228,7 @@ fn packer(dir: &str) -> i32 {
 fn check() -> i32 {
     assert_eq!(push(), 0);
     if Path::new(CONTINUOUS).exists() {
-        if yaml("language").as_str().eq("rust") {
-            return packer(format!("./{CONTINUOUS}/rust").as_str());
-        } else if yaml("language").as_str().eq("d") {
-            return packer(format!("{CONTINUOUS}/d").as_str());
-        } else if yaml("language").as_str().eq("go") {
-            return packer(format!("{CONTINUOUS}/go").as_str());
-        }
+        return packer();
     }
     1
 }
@@ -261,6 +262,8 @@ fn main() -> ExitCode {
         exit(init());
     } else if args.len() == 2 && args.get(1).expect("").eq("--help") {
         exit(help(&args));
+    } else if args.len() == 2 && args.get(1).expect("").eq("gen-script") {
+        exit(gen_script());
     }
     exit(check());
 }
