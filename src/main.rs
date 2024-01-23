@@ -11,7 +11,7 @@ use std::{
 const HOOK: &str = ".git/hooks/post-commit";
 const CONTINUOUS: &str = "continuous";
 const ICON_DIR: &str = ".icons";
-const RELEASE: &str = "1.0.1";
+const RELEASE: &str = "1.0.2";
 
 fn init_hook() -> i32 {
     let mut f = File::create(HOOK).expect("");
