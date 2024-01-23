@@ -65,7 +65,10 @@ fn commit() -> String {
     fs::read_to_string("commit").expect("failed to read the commit file")
 }
 fn send(summary: &str, body: &str) -> i32 {
-    let icon = format!("{}/{ICON_DIR}/continuous.png", env!("HOME"));
+    let icon = format!(
+        "{}/{ICON_DIR}/continuous.png",
+        std::env::var("HOME").expect("HOME not founded")
+    );
 
     assert!(Notification::new()
         .app(project().as_str())
@@ -90,7 +93,11 @@ fn init() -> i32 {
             .success());
     }
 
-    let icons = format!("{}/{}", env!("HOME"), ICON_DIR);
+    let icons = format!(
+        "{}/{}",
+        std::env::var("HOME").expect("HOME not founded"),
+        ICON_DIR
+    );
     if !Path::new(icons.as_str()).exists() {
         fs::create_dir(icons.as_str()).expect("failed to create the icon directory");
     }
@@ -174,7 +181,7 @@ fn init_continuous() -> i32 {
     assert!(Command::new("git")
         .arg("checkout")
         .arg("-b")
-        .arg(env!("USER").to_string().as_str())
+        .arg(std::env::var("USER").expect("USER not founded"))
         .arg(RELEASE)
         .current_dir(".repo")
         .spawn()
