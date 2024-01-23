@@ -124,7 +124,7 @@ fn init() -> i32 {
 }
 
 fn yaml(key: &str) -> String {
-    std::env::var(key).expect("")
+    std::env::var(key).unwrap_or_else(|_| panic!("{key} not found"))
 }
 
 fn gen_script() -> i32 {
