@@ -12,7 +12,7 @@ use std::{
 const HOOK: &str = ".git/hooks/post-commit";
 const CONTINUOUS: &str = "continuous";
 const ICON_DIR: &str = ".icons";
-const RELEASE: &str = "1.0.2";
+const RELEASE: &str = "1.0.1";
 
 fn init_hook() -> i32 {
     let mut f = File::create(HOOK).expect("");
@@ -112,25 +112,29 @@ fn init() -> i32 {
         )
         .is_ok());
     }
-    assert!(Command::new("wget")
-        .arg("-q")
-        .arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/.env.sample")
-        .current_dir(".")
-        .spawn()
-        .expect("Failed to find wget")
-        .wait()
-        .expect("")
-        .success());
+    if !Path::new(".env").exists() {
+        assert!(Command::new("wget")
+            .arg("-q")
+            .arg(
+                "https://raw.githubusercontent.com/taishingi/continuous-testing/master/.env.sample"
+            )
+            .current_dir(".")
+            .spawn()
+            .expect("Failed to find wget")
+            .wait()
+            .expect("")
+            .success());
 
-    assert!(Command::new("mv")
-        .arg(".env.sample")
-        .arg(".env")
-        .current_dir(".")
-        .spawn()
-        .expect("Failed to find mv")
-        .wait()
-        .expect("")
-        .success());
+        assert!(Command::new("mv")
+            .arg(".env.sample")
+            .arg(".env")
+            .current_dir(".")
+            .spawn()
+            .expect("Failed to find mv")
+            .wait()
+            .expect("")
+            .success());
+    }
     assert_eq!(init_hook(), 0);
     assert_eq!(init_continuous(), 0);
     0
@@ -138,7 +142,7 @@ fn init() -> i32 {
 
 fn yaml(key: &str) -> String {
     let x = read_file(".env").expect(".env not founded");
-    x.get(key).expect("failed to found the key").to_string()
+    x.get(key).expect("failed to find the key").to_string()
 }
 
 fn gen_script() -> i32 {
@@ -174,6 +178,9 @@ fn gen_script() -> i32 {
     1
 }
 fn init_continuous() -> i32 {
+    if Path::new(".repo").exists() {
+        fs::remove_dir_all(".repo").expect("failed to remove the tmp dir");
+    }
     assert!(Command::new("git")
         .arg("clone")
         .arg("--quiet")
@@ -198,7 +205,7 @@ fn init_continuous() -> i32 {
     assert!(Command::new("git")
         .arg("checkout")
         .arg("-b")
-        .arg(std::env::var("USER").expect("USER not founded"))
+        .arg(std::env::var("USER").expect("USER no define"))
         .arg(RELEASE)
         .current_dir(".repo")
         .spawn()
@@ -219,7 +226,8 @@ fn init_continuous() -> i32 {
         .wait()
         .expect("")
         .success());
-    gen_script()
+    println!("edit .env file and run -> again gen-scripts");
+    0
 }
 
 fn packer() -> i32 {
