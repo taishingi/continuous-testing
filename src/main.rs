@@ -243,7 +243,7 @@ fn check() -> i32 {
 fn push() -> i32 {
     assert!(Command::new("git")
         .arg("push")
-        .arg(yaml("remote").as_str())
+        .arg(yaml("AGAIN_REMOTE").as_str())
         .arg("--all")
         .current_dir(".")
         .spawn()
@@ -253,7 +253,7 @@ fn push() -> i32 {
         .success());
     assert!(Command::new("git")
         .arg("push")
-        .arg(yaml("remote").as_str())
+        .arg(yaml("AGAIN_REMOTE").as_str())
         .arg("--tags")
         .current_dir(".")
         .spawn()

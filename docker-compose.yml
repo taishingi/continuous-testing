@@ -1,15 +1,10 @@
 version: '3'
 services:
   again:
-    environment:
-      - USER=juwishmaster
-      - HOME=/root
-      - AGAIN_REPOSITORY=continuous-testing
-      - AGAIN_USERNAME=taishingi
-      - AGAIN_BRANCH=master
-      - AGAIN_DOMAIN=github.com
-      - AGAIN_CPU=14
-      - AGAIN_LANGUAGE=rust
+    env_file:
+      - .env
     image: taishingi/again
     volumes:
       - .:/app
+    command:
+      - again
