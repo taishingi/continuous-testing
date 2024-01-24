@@ -1,3 +1,4 @@
+use env_file_reader::read_file;
 use notifme::Notification;
 use std::env::current_dir;
 use std::fs::File;
@@ -7,6 +8,7 @@ use std::{
     path::Path,
     process::{exit, Command, ExitCode},
 };
+
 const HOOK: &str = ".git/hooks/post-commit";
 const CONTINUOUS: &str = "continuous";
 const ICON_DIR: &str = ".icons";
@@ -31,6 +33,7 @@ fn init_hook() -> i32 {
 fn help(args: &[String]) -> i32 {
     println!("{}              : Run the hook", args[0]);
     println!("{} --help       : Display help", args[0]);
+    println!("{} gen-scripts  : Generate scripts", args[0]);
     println!("{} init         : Init the repository", args[0]);
     0
 }
@@ -111,10 +114,20 @@ fn init() -> i32 {
     }
     assert!(Command::new("wget")
         .arg("-q")
-        .arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/again.yaml")
+        .arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/.env.sample")
         .current_dir(".")
         .spawn()
         .expect("Failed to find wget")
+        .wait()
+        .expect("")
+        .success());
+
+    assert!(Command::new("mv")
+        .arg(".env.sample")
+        .arg(".env")
+        .current_dir(".")
+        .spawn()
+        .expect("Failed to find mv")
         .wait()
         .expect("")
         .success());
@@ -124,13 +137,17 @@ fn init() -> i32 {
 }
 
 fn yaml(key: &str) -> String {
-    std::env::var(key).unwrap_or_else(|_| panic!("{key} not found"))
+    let x = read_file(".env").expect(".env not founded");
+    x.get(key).expect("failed to found the key").to_string()
 }
 
 fn gen_script() -> i32 {
     let dir = format!(
         "{}/{CONTINUOUS}/{}",
-        current_dir().expect("").to_str().expect(""),
+        current_dir()
+            .expect("failed to find current dir")
+            .to_str()
+            .expect(""),
         yaml("AGAIN_LANGUAGE")
     );
     if Path::new(dir.as_str()).exists() {
@@ -269,7 +286,7 @@ fn main() -> ExitCode {
         exit(init());
     } else if args.len() == 2 && args.get(1).expect("").eq("--help") {
         exit(help(&args));
-    } else if args.len() == 2 && args.get(1).expect("").eq("gen-script") {
+    } else if args.len() == 2 && args.get(1).expect("").eq("gen-scripts") {
         exit(gen_script());
     }
     exit(check());

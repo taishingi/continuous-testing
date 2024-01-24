@@ -16,4 +16,5 @@ path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+env-file-reader = "0.3.0"
 notifme = "0.0.2"
