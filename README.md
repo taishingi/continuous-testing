@@ -101,14 +101,12 @@ again init
 ### Again configuration
 
 ```dotenv
-USER=juwishmaster
-HOME=/root
-AGAIN_REPOSITORY="continuous-testing"
-AGAIN_USERNAME="taishingi"
-AGAIN_BRANCH="master"
-AGAIN_DOMAIN="github.com"
-AGAIN_CPU="5"
-AGAIN_LANGUAGE="rust"
+AGAIN_REPOSITORY=continuous-testing
+AGAIN_USERNAME=taishingi
+AGAIN_BRANCH=master
+AGAIN_DOMAIN=github.com
+AGAIN_CPU=5
+AGAIN_LANGUAGE=rust
 AGAIN_REMOTE=origin
 ```
 
