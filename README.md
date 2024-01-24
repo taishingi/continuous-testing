@@ -17,7 +17,7 @@ You can be back to an old release if you want or create your branch.
 All providers scripts are based on [archlinux](https://archlinux.org) from my [docker hub](https://hub.docker.com/u/taishingi) to simplify testing.
 
 
-[D](https://hub.docker.com/r/taishingi/dlang/tags) [Rust](https://hub.docker.com/r/taishingi/rlang/tags) [Go](https://hub.docker.com/r/taishingi/glang/tags) [Bash](https://hub.docker.com/r/taishingi/shlang/tags) [Template](https://github.com/taishingi/continuous-template)
+[D](https://hub.docker.com/r/taishingi/dlang/tags) [Rust](https://hub.docker.com/r/taishingi/rlang/tags) [Go](https://hub.docker.com/r/taishingi/glang/tags) [Bash](https://hub.docker.com/r/taishingi/shlang/tags) [Php](https://hub.docker.com/r/taishingi/plang) [C](https://hub.docker.com/r/taishingi/clang) [Java](https://hub.docker.com/r/taishingi/jlang) [Template](https://github.com/taishingi/continuous-template)
 
 ```bash
 cd continuous && git checkout -b new-branch-name $tag || exit 1
@@ -72,6 +72,12 @@ curl -fsSL https://get.docker.com/rootless | sh
 ```bash
 packer plugins install github.com/hashicorp/docker
 ```
+
+### Configure packer for go
+
+```bash
+packer plugins install github.com/hashicorp/googlecompute
+````
 
 ### Install continuous testing
 
