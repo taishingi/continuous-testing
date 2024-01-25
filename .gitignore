@@ -9,4 +9,3 @@ continuous
 commit
 .env
 .env.copy
-.env.sample
