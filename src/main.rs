@@ -15,6 +15,9 @@ const ICON_DIR: &str = ".icons";
 const RELEASE: &str = "1.0.1";
 
 fn init_hook() -> i32 {
+    if Path::new(HOOK).exists() {
+        fs::remove_file(HOOK).expect("failed to remove the hook");
+    }
     let mut f = File::create(HOOK).expect("");
     f.write_all(b"#!/bin/bash\n\nunset GIT_DIR\n\nagain\n\nexit $?\n\n")
         .expect("failed to write file");
@@ -34,6 +37,10 @@ fn help(args: &[String]) -> i32 {
     println!("{}              : Run the hook", args[0]);
     println!("{} --help       : Display help", args[0]);
     println!("{} gen-scripts  : Generate scripts", args[0]);
+    println!(
+        "{} update       : Update all scripts to the latest release",
+        args[0]
+    );
     println!("{} init         : Init the repository", args[0]);
     0
 }
@@ -81,6 +88,39 @@ fn send(summary: &str, body: &str) -> i32 {
         .send());
     0
 }
+
+fn update() -> i32 {
+    assert_eq!(init_env(), 0);
+    assert_eq!(init_hook(), 0);
+    assert_eq!(init_continuous(), 0);
+    0
+}
+
+fn init_env() -> i32 {
+    if Path::new(".env").exists() {
+        assert!(fs::copy(".env", ".env.copy").is_ok());
+    }
+    assert!(Command::new("wget")
+        .arg("-q")
+        .arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/.env.sample")
+        .current_dir(".")
+        .spawn()
+        .expect("Failed to find wget")
+        .wait()
+        .expect("")
+        .success());
+
+    assert!(Command::new("mv")
+        .arg(".env.sample")
+        .arg(".env")
+        .current_dir(".")
+        .spawn()
+        .expect("Failed to find mv")
+        .wait()
+        .expect("")
+        .success());
+    0
+}
 fn init() -> i32 {
     if Path::new(".git").is_dir() && Path::new(HOOK).exists() {
         println!("Already initialized");
@@ -112,29 +152,8 @@ fn init() -> i32 {
         )
         .is_ok());
     }
-    if !Path::new(".env").exists() {
-        assert!(Command::new("wget")
-            .arg("-q")
-            .arg(
-                "https://raw.githubusercontent.com/taishingi/continuous-testing/master/.env.sample"
-            )
-            .current_dir(".")
-            .spawn()
-            .expect("Failed to find wget")
-            .wait()
-            .expect("")
-            .success());
 
-        assert!(Command::new("mv")
-            .arg(".env.sample")
-            .arg(".env")
-            .current_dir(".")
-            .spawn()
-            .expect("Failed to find mv")
-            .wait()
-            .expect("")
-            .success());
-    }
+    assert_eq!(init_env(), 0);
     assert_eq!(init_hook(), 0);
     assert_eq!(init_continuous(), 0);
     0
@@ -181,6 +200,9 @@ fn init_continuous() -> i32 {
     if Path::new(".repo").exists() {
         fs::remove_dir_all(".repo").expect("failed to remove the tmp dir");
     }
+    if Path::new(CONTINUOUS).exists() {
+        fs::remove_dir_all(CONTINUOUS).expect("Failed to remove the continuous directory");
+    }
     assert!(Command::new("git")
         .arg("clone")
         .arg("--quiet")
@@ -214,9 +236,6 @@ fn init_continuous() -> i32 {
         .expect("")
         .success());
 
-    if Path::new(CONTINUOUS).exists() {
-        fs::remove_dir_all(CONTINUOUS).expect("Failed to remove the continuous directory");
-    }
     assert!(Command::new("mv")
         .arg(".repo")
         .arg(CONTINUOUS)
@@ -296,6 +315,8 @@ fn main() -> ExitCode {
         exit(help(&args));
     } else if args.len() == 2 && args.get(1).expect("").eq("gen-scripts") {
         exit(gen_script());
+    } else if args.len() == 2 && args.get(1).expect("").eq("update") {
+        exit(update());
     }
     exit(check());
 }
