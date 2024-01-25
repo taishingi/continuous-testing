@@ -100,6 +100,9 @@ fn init_env() -> i32 {
     if Path::new(".env").exists() {
         assert!(fs::copy(".env", ".env.copy").is_ok());
     }
+    if Path::new(".env.sample").exists() {
+        assert!(fs::copy(".env.sample", ".env.sample.copy").is_ok());
+    }
     assert!(Command::new("wget")
         .arg("-q")
         .arg("https://raw.githubusercontent.com/taishingi/continuous-testing/master/.env.sample")
