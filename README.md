@@ -116,6 +116,17 @@ AGAIN_LANGUAGE=rust
 AGAIN_REMOTE=origin
 ```
 
+### Again language valid
+
+- c
+- c++
+- d
+- go
+- java
+- php
+- rust
+- sh
+
 ### Usage
 
 ```bash
