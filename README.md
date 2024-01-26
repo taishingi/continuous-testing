@@ -25,7 +25,7 @@ cd continuous && git checkout -b new-branch-name $tag || exit 1
 [![continuous](https://github.com/taishingi/continuous-testing/actions/workflows/continuous.yml/badge.svg)](https://github.com/taishingi/continuous-testing/actions/workflows/continuous.yml)
 [![zuu](https://github.com/taishingi/continuous-testing/actions/workflows/zuu.yml/badge.svg)](https://github.com/taishingi/continuous-testing/actions/workflows/zuu.yml)
 
-![demonstration](https://raw.githubusercontent.com/taishingi/continuous-testing/master/again-2.1.0.gif)
+![demonstration](https://raw.githubusercontent.com/taishingi/continuous-testing/master/again-3.0.0.gif)
 
 ![Audit](https://raw.githubusercontent.com/taishingi/continuous-testing/master/badges/social/audit.svg)
 ![Check](https://raw.githubusercontent.com/taishingi/continuous-testing/master/badges/social/check.svg)
